@@ -8,11 +8,13 @@ import {
 } from '@chakra-ui/react';
 import initialTheme from './theme/theme';
 import { useState } from 'react';
+import { UserProvider } from 'context/UseContext';
 
 export default function Main() {
   const [currentTheme, setCurrentTheme] = useState(initialTheme);
   return (
     <ChakraProvider theme={currentTheme}>
+      <UserProvider>
       <Routes>
         <Route path="auth/*" element={<AuthLayout />} />
         <Route
@@ -30,6 +32,7 @@ export default function Main() {
         {/* Redireciona para a página de login como padrão */}
         <Route path="/" element={<Navigate to="/auth/sign-in" replace />} />
       </Routes>
+      </UserProvider>
     </ChakraProvider>
   );
 }

@@ -13,7 +13,7 @@ export default function AdminNavbar(props) {
 		return () => {
 			window.removeEventListener('scroll', changeNavbar);
 		};
-	});
+	},[]);
 
 	const { secondary, message, brandText } = props;
 
@@ -36,6 +36,10 @@ export default function AdminNavbar(props) {
 			setScrolled(false);
 		}
 	};
+	const getLastSegment = () => {
+		const segment = window.location.pathname.split('/').filter(Boolean).pop();
+		return segment.charAt(0).toUpperCase() + segment.slice(1);
+	  };
 
 	return (
 		<Box
@@ -97,7 +101,7 @@ export default function AdminNavbar(props) {
 
 						<BreadcrumbItem color={secondaryText} fontSize='sm' mb='5px'>
 							<BreadcrumbLink href='#' color={secondaryText}>
-								{brandText}
+							{brandText === "/admin/default" ? 'Dashboard' :getLastSegment()}
 							</BreadcrumbLink>
 						</BreadcrumbItem>
 					</Breadcrumb>
@@ -118,7 +122,7 @@ export default function AdminNavbar(props) {
 						_focus={{
 							boxShadow: 'none'
 						}}>
-						{brandText}
+						{brandText === "/admin/default" ? 'Dashboard' :getLastSegment()}
 					</Link>
 				</Box>
 				<Box ms='auto' w={{ sm: '100%', md: 'unset' }}>

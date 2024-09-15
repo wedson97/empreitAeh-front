@@ -50,6 +50,7 @@ import { RiEyeCloseLine } from "react-icons/ri";
 import { useNavigate, Link } from 'react-router-dom'; // Import do useNavigate
 import AlertaCadastro from "./AlertaCadastro";
 import api from "api/requisicoes";
+import { useUser } from "context/UseContext";
 
 function SignIn() {
   // Chakra color mode
@@ -68,12 +69,21 @@ function SignIn() {
     { bg: "secondaryGray.300" },
     { bg: "whiteAlpha.200" }
   );
+  const navigate = useNavigate();
   useEffect(() => {
+    const usuario = localStorage.getItem("usuario");
+    const email = localStorage.getItem("email");
+
+    if (usuario !== null && email !== null) {
+      navigate("/admin/default");
+    }
+
     window.scrollTo(0, 0);
   }, []);
-  const navigate = useNavigate();
+  
   const [show, setShow] = React.useState(false);
   const handleClick = () => setShow(!show);
+  const {login, setLogin} = useUser();
 
   const [alertaCadastro, setAlertaCadastro] = useState({status:"", titulo:"", descricao:"", duracao:3000, visivel:false})
 
@@ -99,8 +109,13 @@ function SignIn() {
     try {
       const response = await api.post("/login",formData)
       if(response.status==200){
+        console.log(response);
+        
         setFormData({email: '',senha: ''})
         navigate("/admin/default")
+        setLogin(response.data)
+        localStorage.setItem("email",response.data.email)
+        localStorage.setItem("usuario", response.data.nome)
       }
     } catch (AxiosError) {
       setAlertaCadastro({status:"error", titulo:"Falha no login",descricao: `Verifique suas credenciais!`, duracao:3000, visivel:true})

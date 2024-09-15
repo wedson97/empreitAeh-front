@@ -14,7 +14,7 @@ export function SidebarBrand() {
   return (
     <Flex align='center' direction='column'>
       {/* <HorizonLogo h='26px' w='175px' my='32px' color={logoColor} /> */}
-      <><div style={{fontSize:'30px'}}>EmpreitaAeh</div> </>
+      <><div style={{fontSize:'30px'}}>EmpreitAeh</div> </>
       <HSeparator mb='20px' />
     </Flex>
   );

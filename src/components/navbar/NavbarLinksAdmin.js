@@ -42,7 +42,14 @@ export default function HeaderLinks(props) {
     '14px 17px 40px 4px rgba(112, 144, 176, 0.18)',
     '14px 17px 40px 4px rgba(112, 144, 176, 0.06)',
   );
+  const nome = localStorage.getItem("usuario");
   const borderButton = useColorModeValue('secondaryGray.500', 'whiteAlpha.200');
+
+  const handleClick = () =>{
+    localStorage.removeItem("email")
+    localStorage.removeItem("usuario")
+  }
+
   return (
     <Flex
       w={{ sm: '100%', md: 'auto' }}
@@ -243,8 +250,8 @@ export default function HeaderLinks(props) {
           <Avatar
             _hover={{ cursor: 'pointer' }}
             color="white"
-            name="i f"
-            bg="orange"
+            name={nome}
+            bg="#e8661e"
             size="sm"
             w="40px"
             h="40px"
@@ -270,7 +277,7 @@ export default function HeaderLinks(props) {
               fontWeight="700"
               color={textColor}
             >
-              👋&nbsp; Hey, Adela
+              👋&nbsp; Hey, {nome}
             </Text>
           </Flex>
           <Flex flexDirection="column" p="10px">
@@ -281,7 +288,7 @@ export default function HeaderLinks(props) {
               borderRadius="8px"
               px="14px"
             >
-             <Text fontSize="sm" as={Link} to="/auth/sign-in">
+             <Text fontSize="sm" as={Link} to="/auth/sign-in" onClick={handleClick}>
               Log out
             </Text>
             </MenuItem>

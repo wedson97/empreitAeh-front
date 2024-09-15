@@ -6,7 +6,7 @@ import Navbar from 'components/navbar/NavbarAdmin.js';
 import Sidebar from 'components/sidebar/Sidebar.js';
 import { SidebarContext } from 'contexts/SidebarContext';
 import React, { useState } from 'react';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import routes from 'routes.js';
 
 // Custom Chakra theme
@@ -25,17 +25,22 @@ export default function Dashboard(props) {
       if (routes[i].collapse) {
         let collapseActiveRoute = getActiveRoute(routes[i].items);
         if (collapseActiveRoute !== activeRoute) {
+          console.log(collapseActiveRoute);
+          
           return collapseActiveRoute;
         }
       } else if (routes[i].category) {
         let categoryActiveRoute = getActiveRoute(routes[i].items);
         if (categoryActiveRoute !== activeRoute) {
+          console.log(categoryActiveRoute);
+          
           return categoryActiveRoute;
         }
       } else {
         if (
           window.location.href.indexOf(routes[i].layout + routes[i].path) !== -1
         ) {
+          console.log("Active Route:", routes[i].name); // Adicione este log
           return routes[i].name;
         }
       }
@@ -105,6 +110,7 @@ export default function Dashboard(props) {
   document.documentElement.dir = 'ltr';
   const { onOpen } = useDisclosure();
   document.documentElement.dir = 'ltr';
+  const location = useLocation();
   return (
     <Box>
       <Box>
@@ -134,7 +140,7 @@ export default function Dashboard(props) {
                 <Navbar
                   onOpen={onOpen}
                   logoText={'Horizon UI Dashboard PRO'}
-                  brandText={getActiveRoute(routes)}
+                  brandText={location.pathname}
                   secondary={getActiveNavbar(routes)}
                   message={getActiveNavbarText(routes)}
                   fixed={fixed}
