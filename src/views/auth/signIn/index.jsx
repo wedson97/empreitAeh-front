@@ -97,11 +97,10 @@ function SignIn() {
     data.append('email', formData.email);
     data.append('senha', formData.senha);
     try {
-      const response = await api.post("/empreiteiros/login",formData)
+      const response = await api.post("/login",formData)
       if(response.status==200){
         setFormData({email: '',senha: ''})
         navigate("/admin/default")
-        
       }
     } catch (AxiosError) {
       setAlertaCadastro({status:"error", titulo:"Falha no login",descricao: `Verifique suas credenciais!`, duracao:3000, visivel:true})

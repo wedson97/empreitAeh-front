@@ -5,7 +5,6 @@ import {
   Flex,
   Icon,
   Image,
-  Link,
   Menu,
   MenuButton,
   MenuItem,
@@ -14,6 +13,7 @@ import {
   useColorModeValue,
   useColorMode,
 } from '@chakra-ui/react';
+import { Link } from 'react-router-dom';
 // Custom Components
 import { ItemContent } from 'components/menu/ItemContent';
 import { SearchBar } from 'components/navbar/searchBar/SearchBar';
@@ -277,27 +277,13 @@ export default function HeaderLinks(props) {
             <MenuItem
               _hover={{ bg: 'none' }}
               _focus={{ bg: 'none' }}
-              borderRadius="8px"
-              px="14px"
-            >
-              <Text fontSize="sm">Profile Settings</Text>
-            </MenuItem>
-            <MenuItem
-              _hover={{ bg: 'none' }}
-              _focus={{ bg: 'none' }}
-              borderRadius="8px"
-              px="14px"
-            >
-              <Text fontSize="sm">Newsletter Settings</Text>
-            </MenuItem>
-            <MenuItem
-              _hover={{ bg: 'none' }}
-              _focus={{ bg: 'none' }}
               color="red.400"
               borderRadius="8px"
               px="14px"
             >
-              <Text fontSize="sm">Log out</Text>
+             <Text fontSize="sm" as={Link} to="/auth/sign-in">
+              Log out
+            </Text>
             </MenuItem>
           </Flex>
         </MenuList>

@@ -30,9 +30,9 @@ const routes = [
     component: <MainDashboard />,
   },
   {
-    name: 'Profile',
+    name: 'Perfil',
     layout: '/admin',
-    path: '/profile',
+    path: '/perfil',
     icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />,
     component: <Profile />,
   },

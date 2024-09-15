@@ -113,7 +113,15 @@ function SignUp() {
           setAlertaCadastro(prev => ({ ...prev, visivel: false }));
         }, 3000);
       }
-      
+    }else{
+      const response = await api.post("/donoObra",formData)
+      if(response.status==200){
+        setFormData({nome: '',cpf: '',cnpj: '',email: '',senha: '',tipo: ''})
+        setAlertaCadastro({status:"success", titulo:"Cadastrado com sucesso!",descricao: `O ${formData.tipo} ${formData.nome} foi cadastro com sucesso!`, duracao:3000, visivel:true})
+        setTimeout(() => {
+          setAlertaCadastro(prev => ({ ...prev, visivel: false }));
+        }, 3000);
+      }
     }
   
   }
