@@ -19,16 +19,24 @@ export default function MiniCalendar(props) {
       maxW='max-content'
       p='20px 15px'
       h='max-content'
+      
       {...rest}>
       <Calendar
         onChange={onChange}
         value={value}
         selectRange={selectRange}
         view={"month"}
+        
         tileContent={<Text color='brand.500'></Text>}
         prevLabel={<Icon as={MdChevronLeft} w='24px' h='24px' mt='4px' />}
         nextLabel={<Icon as={MdChevronRight} w='24px' h='24px' mt='4px' />}
       />
+       <style>{`
+        .react-calendar__tile--active {
+          background-color: #ff7f50 !important; /* Cor do dia selecionado */
+          color: white !important;
+        }
+      `}</style>
     </Card>
   );
 }

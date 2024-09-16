@@ -24,14 +24,15 @@ abbr[title] {
   text-decoration: unset !important;
 }
 .react-calendar__navigation__prev-button {
-  background-color: #4318ff !important;
+  /* background-color: #4318ff !important; */
+  background-color: #e8661e !important;
   border-radius: 10px;
   min-width: 34px !important;
   height: 34px !important;
   color: white;
 }
 .react-calendar__navigation__next-button {
-  background-color: #4318ff !important;
+  background-color: #e8661e !important;
   border-radius: 10px;
   min-width: 34px !important;
   width: 34px !important;
@@ -107,10 +108,10 @@ body.chakra-ui-dark .react-calendar {
   border-radius: 30px;
 }
 body.chakra-ui-dark .react-calendar__navigation__prev-button {
-  background-color: #7551ff !important;
+  background-color: #e8661e !important;
 }
 body.chakra-ui-dark .react-calendar__navigation__next-button {
-  background-color: #7551ff !important;
+  background-color: #e8661e!important;
   color: white;
 }
 body.chakra-ui-dark .react-calendar__tile {

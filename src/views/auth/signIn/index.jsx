@@ -250,8 +250,13 @@ function SignIn() {
               <FormControl display='flex' alignItems='center'>
                 <Checkbox
                   id='remember-login'
-                  colorScheme='brandScheme'
                   me='10px'
+                  sx={{
+                    "& .chakra-checkbox__control[data-checked]": {
+                      bg: "#e8661e",
+                      borderColor: "#e8661e",
+                    },
+                  }}
                 />
                 <FormLabel
                   htmlFor='remember-login'
@@ -264,7 +269,8 @@ function SignIn() {
               </FormControl>
               <NavLink to='/auth/forgot-password'>
                 <Text
-                  color={textColorBrand}
+                  // color={textColorBrand}
+                  color={'#e8661e'}
                   fontSize='sm'
                   w='134px'
                   fontWeight='300'>
@@ -275,6 +281,7 @@ function SignIn() {
             <Button
               fontSize='sm'
               variant='brand'
+              backgroundColor={'#e8661e'}
               fontWeight='500'
               w='100%'
               h='50'
@@ -303,7 +310,8 @@ function SignIn() {
               Não tem cadastro ?
               <NavLink to='/auth/sign-up'>
                 <Text
-                  color={textColorBrand}
+                  // color={textColorBrand}
+                  color={'#e8661e'}
                   as='span'
                   ms='5px'
                   fontWeight='500'>

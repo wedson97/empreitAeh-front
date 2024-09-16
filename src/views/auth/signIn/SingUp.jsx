@@ -310,6 +310,7 @@ function SignUp() {
               fontSize='sm'
               variant='brand'
               fontWeight='500'
+              backgroundColor={'#e8661e'}
               w='100%'
               h='50'
               mb='24px'

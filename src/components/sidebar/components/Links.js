@@ -64,7 +64,7 @@ export function SidebarLinks(props) {
                   <Flex w="100%" alignItems="center" justifyContent="center">
                     <Box
                       color={
-                        activeRoute(route.path.toLowerCase()) ? activeIcon : textColor
+                        activeRoute(route.path.toLowerCase()) ? '#e8661e' : textColor
                       }
                       me="18px"
                     >
@@ -86,7 +86,7 @@ export function SidebarLinks(props) {
                     h="36px"
                     w="4px"
                     bg={
-                      activeRoute(route.path.toLowerCase()) ? brandColor : "transparent"
+                      activeRoute(route.path.toLowerCase()) ? '#e8661e' : "transparent"
                     }
                     borderRadius="5px"
                   />

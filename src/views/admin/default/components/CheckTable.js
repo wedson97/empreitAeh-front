@@ -52,8 +52,13 @@ export default function CheckTable(props) {
         <Flex align="center">
           <Checkbox
             defaultChecked={info.getValue()[1]}
-            colorScheme="brandScheme"
             me="10px"
+            sx={{
+              "& .chakra-checkbox__control[data-checked]": {
+                bg: "#e8661e",
+                borderColor: "#e8661e",
+              },
+            }}
           />
           <Text color={textColor} fontSize="sm" fontWeight="700">
             {info.getValue()[0]}

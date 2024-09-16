@@ -117,7 +117,7 @@ export default function HeaderLinks(props) {
             me="10px"
           />
         </MenuButton>
-        <MenuList
+        {/*<MenuList
           boxShadow={shadow}
           p="20px"
           borderRadius="20px"
@@ -128,7 +128,7 @@ export default function HeaderLinks(props) {
           minW={{ base: 'unset', md: '400px', xl: '450px' }}
           maxW={{ base: '360px', md: 'unset' }}
         >
-          <Flex w="100%" mb="20px">
+           <Flex w="100%" mb="20px">
             <Text fontSize="md" fontWeight="600" color={textColor}>
               Notifications
             </Text>
@@ -161,8 +161,8 @@ export default function HeaderLinks(props) {
             >
               <ItemContent info="Horizon Design System Free" />
             </MenuItem>
-          </Flex>
-        </MenuList>
+          </Flex> 
+        </MenuList>*/}
       </Menu>
 
       <Menu>
@@ -176,7 +176,7 @@ export default function HeaderLinks(props) {
             me="10px"
           />
         </MenuButton>
-        <MenuList
+        {/* <MenuList
           boxShadow={shadow}
           p="20px"
           me={{ base: '30px', md: 'unset' }}
@@ -224,7 +224,7 @@ export default function HeaderLinks(props) {
               </Button>
             </Link>
           </Flex>
-        </MenuList>
+        </MenuList> */}
       </Menu>
 
       <Button
