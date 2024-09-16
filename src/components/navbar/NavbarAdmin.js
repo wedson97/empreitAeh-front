@@ -3,16 +3,24 @@ import { Box, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Flex, Link, Text, useC
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import AdminNavbarLinks from 'components/navbar/NavbarLinksAdmin';
+import { useNavigate } from 'react-router-dom';
 
 export default function AdminNavbar(props) {
 	const [ scrolled, setScrolled ] = useState(false);
-
+	const nome = localStorage.getItem("usuario")
+	console.log(nome);
+	const email = localStorage.getItem("email")
+	const navegate = useNavigate();
 	useEffect(() => {
-		window.addEventListener('scroll', changeNavbar);
+		if( email===null && nome===null){
+			navegate("/")
+		  }else{
+			window.addEventListener('scroll', changeNavbar);
 
-		return () => {
-			window.removeEventListener('scroll', changeNavbar);
-		};
+			return () => {
+				window.removeEventListener('scroll', changeNavbar);
+			}
+		  }
 	},[]);
 
 	const { secondary, message, brandText } = props;

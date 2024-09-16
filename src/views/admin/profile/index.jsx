@@ -34,10 +34,13 @@ import Upload from "views/admin/profile/components/Upload";
 // Assets
 import banner from "assets/img/auth/banner.png";
 import avatar from "assets/img/avatars/avatar4.png";
-import React from "react";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Overview() {
   const nome = localStorage.getItem("usuario")
+  
+  
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
       {/* Main Fields */}

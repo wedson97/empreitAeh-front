@@ -59,6 +59,7 @@ import tableDataCheck from "views/admin/default/variables/tableDataCheck.json";
 import tableDataComplex from "views/admin/default/variables/tableDataComplex.json";
 import { useEffect } from "react";
 import { useUser } from "context/UseContext";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export default function UserReports() {
   // Chakra Color Mode
@@ -66,8 +67,14 @@ export default function UserReports() {
   const boxBg = useColorModeValue("secondaryGray.300", "whiteAlpha.100");
   const {login} = useUser();
   
+  const navegate = useNavigate();
   useEffect(() => {
     window.scrollTo(0, 0);
+    const email = localStorage.getItem("email")
+    const usuario = localStorage.getItem("usuario")
+    if( email===null && usuario===null){
+      navegate("/")
+    }
   }, []);
 
   return (
