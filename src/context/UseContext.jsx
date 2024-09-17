@@ -5,9 +5,10 @@ const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   //LOGIN
   const [login, setLogin] = useState({id:"",nome:"",email:"",cpf:"",cnpj:""})
-
+  // ALERTA CADASTRO
+  const [alertaCadastro, setAlertaCadastro] = useState({status:"", titulo:"", descricao:"", duracao:3000, visivel:false})
   return (
-    <UserContext.Provider value={{ login, setLogin }}>
+    <UserContext.Provider value={{ login, setLogin, alertaCadastro, setAlertaCadastro }}>
       {children}
     </UserContext.Provider>
   );

@@ -53,7 +53,7 @@ export function SidebarLinks(props) {
       ) {
         return (
           <>
-          {route.icon && route.name !== "Sign In" ? (
+          {route.icon && route.name !== "Sign In" && route.name !== "Principal"? (
             <NavLink key={index} to={route.layout + route.path}>
               <Box>
                 <HStack

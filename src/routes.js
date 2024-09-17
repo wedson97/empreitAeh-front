@@ -19,7 +19,9 @@ import RTL from 'views/admin/rtl';
 
 // Auth Imports
 import SignInCentered from 'views/auth/signIn';
-import SignUp from 'views/auth/signIn/SingUp';
+import SignUpEmpreiteiro from 'views/auth/signUp/SingUpEmpreiteiro';
+import SingUpDonoObra from 'views/auth/signUp/SingUpDonoObra';
+import Principal from 'views/auth/Principal/Index';
 
 const routes = [
   {
@@ -47,9 +49,21 @@ const routes = [
   {
     name: 'Sign up',
     layout: '/auth',
-    path: '/sign-up',
+    path: '/sign-up/empreiteiro',
+    component: <SignUpEmpreiteiro />,
+  },
+  {
+    name: 'Sign up',
+    layout: '/auth',
+    path: '/sign-up/donoObra',
+    component: <SingUpDonoObra />,
+  },
+  {
+    name: 'Principal',
+    layout: '/auth',
+    path: '/principal',
     icon: <Icon as={MdLock} width="20px" height="20px" color="inherit" />,
-    component: <SignUp />,
+    component: <Principal />,
   },
   // {
   //   name: 'RTL Admin',

@@ -6,22 +6,24 @@ import {
   AlertDescription,
   Box,
 } from "@chakra-ui/react";
+import { useUser } from "context/UseContext";
 
-const AlertaCadastro = ({ status, titulo, descricao, duracao = 3000, visivel }) => {
+const AlertaCadastro = () => {
   const [mostrarAlerta, setMostrarAlerta] = useState(false);
+  const {alertaCadastro, setAlertaCadastro} = useUser();
 
   useEffect(() => {
-    if (visivel) {
+    if (alertaCadastro.visivel) {
       setMostrarAlerta(true);
       const timer = setTimeout(() => {
         setMostrarAlerta(false);
-      }, duracao);
+      }, alertaCadastro.duracao);
 
       return () => clearTimeout(timer);
     } else {
       setMostrarAlerta(false);
     }
-  }, [visivel, duracao]);
+  }, [alertaCadastro.visivel, alertaCadastro.duracao]);
 
   if (!mostrarAlerta) {
     return null; // Não renderiza o alerta se não estiver visível
@@ -29,18 +31,18 @@ const AlertaCadastro = ({ status, titulo, descricao, duracao = 3000, visivel }) 
 
   return (
     <Box
-      position="fixed" // Fixa no topo da tela
-      top="20px" // Distância do topo
-      left="50%" // Centraliza horizontalmente
-      transform="translateX(-50%)" // Ajuste para centralizar completamente
-      zIndex="9999" // Garante que fique acima de todos os outros elementos
+      position="fixed"
+      top="20px"
+      left="50%"
+      transform="translateX(-50%)"
+      zIndex="9999"
       width="auto"
       maxW="90%"
     >
-      <Alert status={status} variant="solid">
+      <Alert status={alertaCadastro.status} variant="solid">
         <AlertIcon />
-        {titulo && <AlertTitle>{titulo}</AlertTitle>}
-        {descricao && <AlertDescription>{descricao}</AlertDescription>}
+        {alertaCadastro.titulo && <AlertTitle>{alertaCadastro.titulo}</AlertTitle>}
+        {alertaCadastro.descricao && <AlertDescription>{alertaCadastro.descricao}</AlertDescription>}
       </Alert>
     </Box>
   );

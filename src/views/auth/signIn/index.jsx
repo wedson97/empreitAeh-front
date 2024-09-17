@@ -1,29 +1,6 @@
-/* eslint-disable */
-/*!
-  _   _  ___  ____  ___ ________  _   _   _   _ ___   
- | | | |/ _ \|  _ \|_ _|__  / _ \| \ | | | | | |_ _| 
- | |_| | | | | |_) || |  / / | | |  \| | | | | || | 
- |  _  | |_| |  _ < | | / /| |_| | |\  | | |_| || |
- |_| |_|\___/|_| \_\___/____\___/|_| \_|  \___/|___|
-                                                                                                                                                                                                                                                                                                                                       
-=========================================================
-* Horizon UI - v1.1.0
-=========================================================
-
-* Product Page: https://www.horizon-ui.com/
-* Copyright 2023 Horizon UI (https://www.horizon-ui.com/)
-
-* Designed and Coded by Simmmple
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 
 import React, {useEffect, useState} from "react";
 import { NavLink } from "react-router-dom";
-// Chakra imports
 import {
   Box,
   Button,
@@ -39,7 +16,6 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
-// Custom components
 import { HSeparator } from "components/separator/Separator";
 import DefaultAuth from "layouts/auth/Default";
 // Assets
@@ -47,17 +23,14 @@ import illustration from "assets/img/auth/empreitaehBranco.png";
 import { FcGoogle } from "react-icons/fc";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiEyeCloseLine } from "react-icons/ri";
-import { useNavigate, Link } from 'react-router-dom'; // Import do useNavigate
+import { useNavigate } from 'react-router-dom';
 import AlertaCadastro from "./AlertaCadastro";
 import api from "api/requisicoes";
 import { useUser } from "context/UseContext";
 
 function SignIn() {
-  // Chakra color mode
   const textColor = useColorModeValue("navy.700", "white");
   const textColorSecondary = "gray.400";
-  const textColorDetails = useColorModeValue("navy.700", "secondaryGray.600");
-  const textColorBrand = useColorModeValue("brand.500", "white");
   const brandStars = useColorModeValue("brand.500", "brand.400");
   const googleBg = useColorModeValue("secondaryGray.300", "whiteAlpha.200");
   const googleText = useColorModeValue("navy.700", "white");
@@ -306,7 +279,7 @@ function SignIn() {
             alignItems='start'
             maxW='100%'
             mt='0px'>
-            <Text color={textColorDetails} fontWeight='400' fontSize='14px'>
+            {/* <Text color={textColorDetails} fontWeight='400' fontSize='14px'>
               Não tem cadastro ?
               <NavLink to='/auth/sign-up'>
                 <Text
@@ -318,7 +291,7 @@ function SignIn() {
                   Criar conta
                 </Text>
               </NavLink>
-            </Text>
+            </Text> */}
           </Flex>
         </Flex>
       </Flex>

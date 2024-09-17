@@ -9,6 +9,7 @@ import {
 import initialTheme from './theme/theme';
 import { useState } from 'react';
 import { UserProvider } from 'context/UseContext';
+import AlertaCadastro from 'views/auth/signIn/AlertaCadastro';
 
 export default function Main() {
   const [currentTheme, setCurrentTheme] = useState(initialTheme);
@@ -30,8 +31,9 @@ export default function Main() {
           }
         />
         {/* Redireciona para a página de login como padrão */}
-        <Route path="/" element={<Navigate to="/auth/sign-in" replace />} />
+        <Route path="/" element={<Navigate to="/auth/principal" replace />} />
       </Routes>
+      <AlertaCadastro/>
       </UserProvider>
     </ChakraProvider>
   );
