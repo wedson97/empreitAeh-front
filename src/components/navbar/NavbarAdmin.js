@@ -24,6 +24,7 @@ export default function AdminNavbar(props) {
 	},[]);
 
 	const { secondary, message, brandText } = props;
+	
 
 	// Here are all the props that may change depending on navbar's type or state.(secondary, variant, scrolled)
 	let mainText = useColorModeValue('navy.700', 'white');
@@ -109,7 +110,7 @@ export default function AdminNavbar(props) {
 
 						<BreadcrumbItem color={secondaryText} fontSize='sm' mb='5px'>
 							<BreadcrumbLink href='#' color={secondaryText}>
-							{brandText === "/admin/default" ? 'Dashboard' :getLastSegment()}
+							{brandText.name === "/admin/default" ? 'Dashboard' :getLastSegment()}
 							</BreadcrumbLink>
 						</BreadcrumbItem>
 					</Breadcrumb>

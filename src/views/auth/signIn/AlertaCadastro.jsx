@@ -26,7 +26,7 @@ const AlertaCadastro = () => {
   }, [alertaCadastro.visivel, alertaCadastro.duracao]);
 
   if (!mostrarAlerta) {
-    return null; // Não renderiza o alerta se não estiver visível
+    return null;
   }
 
   return (

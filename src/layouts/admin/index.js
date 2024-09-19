@@ -47,6 +47,12 @@ export default function Dashboard(props) {
     }
     return activeRoute;
   };
+  console.log("Routes");
+  routes.map((route) => {
+    console.log(route.name);
+  });
+  
+  
   const getActiveNavbar = (routes) => {
     let activeNavbar = false;
     for (let i = 0; i < routes.length; i++) {
@@ -140,7 +146,7 @@ export default function Dashboard(props) {
                 <Navbar
                   onOpen={onOpen}
                   logoText={'Horizon UI Dashboard PRO'}
-                  brandText={location.pathname}
+                  brandText={routes}
                   secondary={getActiveNavbar(routes)}
                   message={getActiveNavbarText(routes)}
                   fixed={fixed}

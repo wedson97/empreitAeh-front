@@ -7,6 +7,7 @@ import {
   MdHome,
   MdLock,
   MdOutlineShoppingCart,
+  MdMonetizationOn
 } from 'react-icons/md';
 
 // Admin Imports
@@ -22,6 +23,7 @@ import SignInCentered from 'views/auth/signIn';
 import SignUpEmpreiteiro from 'views/auth/signUp/SingUpEmpreiteiro';
 import SingUpDonoObra from 'views/auth/signUp/SingUpDonoObra';
 import Principal from 'views/auth/Principal/Index';
+import Orcamento from 'views/admin/orcamento';
 
 const routes = [
   {
@@ -64,6 +66,13 @@ const routes = [
     path: '/principal',
     icon: <Icon as={MdLock} width="20px" height="20px" color="inherit" />,
     component: <Principal />,
+  },
+  {
+    name: 'Orçamento',
+    layout: '/admin',
+    path: '/orcamento',
+    icon: <Icon as={MdMonetizationOn} width="20px" height="20px" color="inherit" />,
+    component: <Orcamento />,
   },
   // {
   //   name: 'RTL Admin',
