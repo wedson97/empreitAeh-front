@@ -15,46 +15,34 @@ import {
     IconButton,
     Text
   } from "@chakra-ui/react";
-  import React, { useEffect} from "react";
-  import { IoMdEye, IoMdClock, IoMdHammer } from "react-icons/io";
-  import { MdCheckCircle } from "react-icons/md";
+  import React, { useEffect, useState } from "react";
+  import { IoMdEye, IoMdClock} from "react-icons/io";
 import api from "api/requisicoes";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "context/UseContext";
   
-export default function TabelaOrcamento() {
-    const {orcamentos, setOrcamentos} = useUser()
+export default function TabelaObras() {
+    const {obras, setObras} = useUser();
+    const {empreiteiro, setEmpreiteiro} = useUser();
     const navigate = useNavigate();
     useEffect(() => {
       window.scrollTo(0, 0);
-  
       const fetchEmpreiteiro = async () => {
-        const email = localStorage.getItem("email");
-        const usuario = localStorage.getItem("usuario");
+        try {
+          const empreiteiros = await api.get("/empreiteiros");
+          const nome_empreiteiro_logado = localStorage.getItem("usuario");
   
-        if (email === null && usuario === null) {
-          navigate("/");
-        } else {
-          try {
-            const empreiteiro = await api.get("/empreiteiros");
-            const nome_empreiteiro_logado = localStorage.getItem("usuario");
-            console.log(nome_empreiteiro_logado);
-  
-            const empreiteiroFiltrado = empreiteiro.data.filter(e => e.nome === nome_empreiteiro_logado);
-  
-            if (empreiteiroFiltrado.length > 0) {
-              const empreiteiroId = empreiteiroFiltrado[0].id;
-  
-              const response = await api.get(`/empreiteiro/${empreiteiroId}/orcamentos`);
-              setOrcamentos(response.data)
-              console.log(response.data[0].dono_obra.nome);
-              
-            } else {
-              console.log("Nenhum empreiteiro encontrado.");
-            }
-          } catch (error) {
-            console.error("Erro ao buscar os empreiteiros ou orçamentos:", error);
+          const empreiteiroFiltrado = empreiteiros.data.filter(e => e.nome === nome_empreiteiro_logado);
+          if (empreiteiroFiltrado.length > 0) {
+            setEmpreiteiro(empreiteiroFiltrado[0]);
+            const empreiteiroId = empreiteiroFiltrado[0].id;
+            const response = await api.get(`/empreiteiro/${empreiteiroId}/obras`);
+            setObras(response.data)
+            console.log(response.data[0].orcamento.dono_obra.nome);
+            
           }
+        } catch (error) {
+          console.error("Erro ao buscar os empreiteiros ou orçamentos:", error);
         }
       };
   
@@ -62,11 +50,7 @@ export default function TabelaOrcamento() {
     }, [navigate]);
     
     const getStatusIcon = (row) => {
-      if (row.data_aprovacao===null){
-        return { status: "Em Análise", icon: IoMdClock, color: "blue.600" }
-      }else{
-        return { status: "Finalizado", icon: MdCheckCircle, color: "green"  }
-      }
+      if (row.orcamento.data_aprovacao!==null){return { status: "Em Andamento", icon: IoMdClock, color: "blue.600" }}
       // switch (status) {
       //   case "Finalizado":
       //     return { icon: MdCheckCircle, color: "green" };
@@ -84,22 +68,24 @@ export default function TabelaOrcamento() {
         <SimpleGrid  gap='20px' mb='20px' backgroundColor="white" borderRadius="20px" overflow="hidden">
         <TableContainer>
           <Table variant="striped" backgroundColor="#f0f3f5">
-            <TableCaption>Registro de orçamentos</TableCaption>
+            <TableCaption>Registro de obras</TableCaption>
             <Thead>
               <Tr>
                 <Th>Dono da obra</Th>
-                <Th>Data do orçamento</Th>
+                <Th>Data de inicio</Th>
+                <Th>Previsão de termino</Th>
                 <Th>Status</Th>
                 <Th>Visualizar</Th>
               </Tr>
             </Thead>
             <Tbody>
-              {orcamentos.map((row, index) => {
+              {obras.map((row, index) => {
                 const { status, icon, color } = getStatusIcon(row);
                 return (
                   <Tr key={index}>
-                    <Td>{row.dono_obra.nome}</Td>
-                    <Td>{new Date(row.data_criacao).toLocaleDateString('pt-BR')}</Td>
+                    <Td>{row.orcamento.dono_obra.nome}</Td>
+                    <Td>{new Date(row.orcamento.data_inicio).toLocaleDateString('pt-BR')}</Td>
+                    <Td>{new Date(row.orcamento.data_termino).toLocaleDateString('pt-BR')}</Td>
                     <Td>
                       <Flex align="center">
                         <Icon as={icon} color={color} boxSize={6} />

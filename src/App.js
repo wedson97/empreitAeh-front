@@ -10,6 +10,8 @@ import initialTheme from './theme/theme';
 import { useState } from 'react';
 import { UserProvider } from 'context/UseContext';
 import AlertaCadastro from 'views/auth/signIn/AlertaCadastro';
+import AlertaOrcamento from 'views/admin/orcamento/components/AlertaOrcamento';
+import AlertaObra from 'views/admin/obra/components/AlertaObra';
 
 export default function Main() {
   const [currentTheme, setCurrentTheme] = useState(initialTheme);
@@ -34,6 +36,8 @@ export default function Main() {
         <Route path="/" element={<Navigate to="/auth/principal" replace />} />
       </Routes>
       <AlertaCadastro/>
+      <AlertaOrcamento/>
+     <AlertaObra/>
       </UserProvider>
     </ChakraProvider>
   );

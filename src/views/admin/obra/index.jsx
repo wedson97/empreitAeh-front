@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Box, Button } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import TabelaOrcamento from "./components/TabelaOrcamento";
-import NovoOrcamento from "./components/NovoOrcamento";
-export default function Orcamento() {
+import TabelaObras from "./components/TabelaObras";
+import NovoObra from "./components/NovoObra";
+export default function Obra() {
   const [showTabela, setShowTabela] = useState(false);
   const navigate = useNavigate();
 
@@ -24,9 +24,9 @@ export default function Orcamento() {
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
       <Button onClick={handleButtonClick} mb={4} backgroundColor={"#e8661e"} color={"white"}>
-        {showTabela ?"Mostrar Tabela":  "Novo orçamento" }
+        {showTabela ?"Mostrar Tabela":  "Nova obra" }
       </Button>
-      {showTabela ? <NovoOrcamento setShowTabela={setShowTabela}/>: <TabelaOrcamento /> }
+      {showTabela ? <NovoObra setShowTabela={setShowTabela}/>: <TabelaObras /> }
     </Box>
   );
 }

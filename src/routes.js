@@ -2,20 +2,18 @@ import React from 'react';
 
 import { Icon } from '@chakra-ui/react';
 import {
-  MdBarChart,
   MdPerson,
   MdHome,
   MdLock,
-  MdOutlineShoppingCart,
-  MdMonetizationOn
+  MdMonetizationOn,
+  MdConstruction
 } from 'react-icons/md';
 
 // Admin Imports
 import MainDashboard from 'views/admin/default';
-import NFTMarketplace from 'views/admin/marketplace';
 import Profile from 'views/admin/profile';
-import DataTables from 'views/admin/dataTables';
-import RTL from 'views/admin/rtl';
+import Orcamento from 'views/admin/orcamento';
+import Obra from 'views/admin/obra';
 
 
 // Auth Imports
@@ -23,7 +21,6 @@ import SignInCentered from 'views/auth/signIn';
 import SignUpEmpreiteiro from 'views/auth/signUp/SingUpEmpreiteiro';
 import SingUpDonoObra from 'views/auth/signUp/SingUpDonoObra';
 import Principal from 'views/auth/Principal/Index';
-import Orcamento from 'views/admin/orcamento';
 
 const routes = [
   {
@@ -73,6 +70,13 @@ const routes = [
     path: '/orcamento',
     icon: <Icon as={MdMonetizationOn} width="20px" height="20px" color="inherit" />,
     component: <Orcamento />,
+  },
+  {
+    name: 'Obras',
+    layout: '/admin',
+    path: '/obras',
+    icon: <Icon as={MdConstruction} width="20px" height="20px" color="inherit" />,
+    component: <Obra />,
   },
   // {
   //   name: 'RTL Admin',
