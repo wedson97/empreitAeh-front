@@ -47,10 +47,6 @@ export default function Dashboard(props) {
     }
     return activeRoute;
   };
-  console.log("Routes");
-  routes.map((route) => {
-    console.log(route.name);
-  });
   
   
   const getActiveNavbar = (routes) => {

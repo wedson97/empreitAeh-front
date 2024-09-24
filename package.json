@@ -18,6 +18,8 @@
     "apexcharts": "3.50.0",
     "axios": "^1.7.7",
     "framer-motion": "^11.3.7",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.2",
     "npm-force-resolutions": "^0.0.10",
     "react": "18.3.1",
     "react-apexcharts": "1.4.1",
@@ -30,6 +32,7 @@
     "react-is": "^18.3.1",
     "react-router-dom": "^6.25.1",
     "react-scripts": "^5.0.0",
+    "react-to-pdf": "^1.0.1",
     "stylis": "^4.3.2",
     "stylis-plugin-rtl": "^2.0.2",
     "web-vitals": "^4.2.2"

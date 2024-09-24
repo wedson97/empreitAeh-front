@@ -15,15 +15,18 @@ import {
     IconButton,
     Text
   } from "@chakra-ui/react";
-  import React, { useEffect} from "react";
+  import React, { useEffect, useState} from "react";
   import { IoMdEye, IoMdClock, IoMdHammer } from "react-icons/io";
   import { MdCheckCircle } from "react-icons/md";
 import api from "api/requisicoes";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "context/UseContext";
+import PdfOrcamento from "./PdfOrcamento";
   
 export default function TabelaOrcamento() {
     const {orcamentos, setOrcamentos} = useUser()
+    const [isPdfVisible, setPdfVisible] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
     const navigate = useNavigate();
     useEffect(() => {
       window.scrollTo(0, 0);
@@ -80,6 +83,13 @@ export default function TabelaOrcamento() {
       //     return null;
       // }
     };
+
+    const handleViewPdf = (row) => {
+      setSelectedRow(row);
+      console.log(row);
+      
+      setPdfVisible(true);
+    };
     return (
         <SimpleGrid  gap='20px' mb='20px' backgroundColor="white" borderRadius="20px" overflow="hidden">
         <TableContainer>
@@ -114,6 +124,7 @@ export default function TabelaOrcamento() {
                         color="white"
                         aria-label="Visualizar"
                         icon={<IoMdEye />}
+                        onClick={() => handleViewPdf(row)}
                       />
                     </Td>
                   </Tr>
@@ -122,6 +133,7 @@ export default function TabelaOrcamento() {
             </Tbody>
           </Table>
         </TableContainer>
+        {isPdfVisible && <PdfOrcamento row={selectedRow} setPdfVisible={setPdfVisible} />}
         </SimpleGrid>
         
     );

@@ -14,6 +14,7 @@ import MainDashboard from 'views/admin/default';
 import Profile from 'views/admin/profile';
 import Orcamento from 'views/admin/orcamento';
 import Obra from 'views/admin/obra';
+import PdfObra from 'views/admin/obra/components/PdfObra';
 
 
 // Auth Imports
@@ -77,7 +78,7 @@ const routes = [
     path: '/obras',
     icon: <Icon as={MdConstruction} width="20px" height="20px" color="inherit" />,
     component: <Obra />,
-  },
+  }
   // {
   //   name: 'RTL Admin',
   //   layout: '/rtl',

@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom';
 export default function AdminNavbar(props) {
 	const [ scrolled, setScrolled ] = useState(false);
 	const nome = localStorage.getItem("usuario")
-	console.log(nome);
 	const email = localStorage.getItem("email")
 	const navegate = useNavigate();
 	useEffect(() => {

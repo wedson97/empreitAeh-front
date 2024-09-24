@@ -79,7 +79,6 @@ export default function NovoOrcamento({ setShowTabela }) {
     try {
       const response = await api.post(`/empreiteiro/${empreiteiro.id}/obras/${formDataObra.id_orcamento}`, formDataEndereco)
       if(response.status===201){
-        console.log(response.data);
         const response_put_orcamento = await api.put(`/empreiteiro/${empreiteiro.id}/orcamentos/${formDataObra.id_orcamento}`, {
           data_aprovacao: new Date().toLocaleDateString('pt-BR').split('/').reverse().join('-')
         });
