@@ -13,8 +13,11 @@ const PdfObra = ({ setPdfVisible, row }) => {
         if (input) {
             html2canvas(input).then((canvas) => {
                 const imgData = canvas.toDataURL("image/png");
-                const pdf = new jsPDF();
-                pdf.addImage(imgData, "PNG", 0, 0);
+                const pdf = new jsPDF("portrait", "mm", "a4");
+                const imgWidth = pdf.internal.pageSize.getWidth();
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+                pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
 
                 const blob = pdf.output("blob");
                 const url = URL.createObjectURL(blob);
@@ -27,7 +30,7 @@ const PdfObra = ({ setPdfVisible, row }) => {
 
     useEffect(() => {
         generatePDF();
-        navigate("/admin/obras");
+        navigate("/admin/orcamento");
         setPdfVisible(false);
     }, []);
 

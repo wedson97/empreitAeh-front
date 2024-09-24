@@ -98,7 +98,7 @@ export default function TabelaObras() {
                       color="white"
                       aria-label="Visualizar"
                       icon={<IoMdEye />}
-                      onClick={() => handleViewPdf(row)} // Passa a linha ao clicar
+                      onClick={() => handleViewPdf(row)}
                     />
                   </Td>
                 </Tr>
