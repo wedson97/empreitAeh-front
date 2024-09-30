@@ -1,6 +1,5 @@
 
 import {
-    Box,
     Flex,
     Icon,
     SimpleGrid,
@@ -15,60 +14,99 @@ import {
     IconButton,
     Text
   } from "@chakra-ui/react";
-  import React, { useEffect, useState} from "react";
-  import { IoMdEye, IoMdClock, IoMdHammer } from "react-icons/io";
-  import { MdCheckCircle } from "react-icons/md";
+  import React, { useCallback, useEffect, useState} from "react";
+  import { IoMdEye, IoMdClock} from "react-icons/io";
+  import { MdCheckCircle, MdCancel  } from "react-icons/md";
 import api from "api/requisicoes";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "context/UseContext";
 import PdfOrcamento from "./PdfOrcamento";
   
 export default function TabelaOrcamento() {
-    const {orcamentos, setOrcamentos} = useUser()
-    const [isPdfVisible, setPdfVisible] = useState(false);
+  const {orcamentos, setOrcamentos} = useUser()
+  const [isPdfVisible, setPdfVisible] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
+  const {empreiteiro, donoObra} = useUser();
     const navigate = useNavigate();
+    const handleAprovarOrcamento = useCallback(async (row) => {
+      let response;
+      try {
+        if (empreiteiro) {
+          response = await api.put(`/empreiteiro/${empreiteiro.id}/orcamento/${row.id}/compactuar`, {
+            data_compactuacao: new Date().toISOString()
+          });
+          if (response && response.status === 200) {
+            setOrcamentos((prevOrcamentos) =>
+              prevOrcamentos.map((orcamento) =>
+                orcamento.id === row.id
+                  ? { ...orcamento, data_compactuacao: new Date().toISOString() }
+                  : orcamento
+              )
+            );
+          }
+        } else if (donoObra) {
+          response = await api.put(`/dono_obra/${donoObra.id}/orcamento/${row.id}/aprovar`, {
+            data_aprovacao: new Date().toISOString()
+          });
+          if (response && response.status === 200) {
+            setOrcamentos((prevOrcamentos) =>
+              prevOrcamentos.map((orcamento) =>
+                orcamento.id === row.id
+                  ? { ...orcamento, data_aprovacao: new Date().toISOString() }
+                  : orcamento
+              )
+            );
+          }
+        }
+        
+        
+      } catch (error) {
+        console.error("Erro ao aprovar o orçamento:", error);
+      }
+    }, [empreiteiro, donoObra, setOrcamentos]);
+  
     useEffect(() => {
       window.scrollTo(0, 0);
-  
+      
       const fetchEmpreiteiro = async () => {
         const email = localStorage.getItem("email");
         const usuario = localStorage.getItem("usuario");
   
-        if (email === null && usuario === null) {
+        if (!email && !usuario) {
           navigate("/");
         } else {
           try {
-            const empreiteiro = await api.get("/empreiteiros");
-            const nome_empreiteiro_logado = localStorage.getItem("usuario");
-            console.log(nome_empreiteiro_logado);
-  
-            const empreiteiroFiltrado = empreiteiro.data.filter(e => e.nome === nome_empreiteiro_logado);
-  
-            if (empreiteiroFiltrado.length > 0) {
-              const empreiteiroId = empreiteiroFiltrado[0].id;
-  
-              const response = await api.get(`/empreiteiro/${empreiteiroId}/orcamentos`);
-              setOrcamentos(response.data)
-              console.log(response.data[0].dono_obra.nome);
-              
-            } else {
-              console.log("Nenhum empreiteiro encontrado.");
+            let response;
+            if (empreiteiro) {
+              response = await api.get(`/empreiteiro/${empreiteiro.id}/orcamentos`);
+            } else if (donoObra) {
+              response = await api.get(`/dono_obra/${donoObra.id}/orcamentos`);
+            }
+            if (response) {
+              setOrcamentos(response.data);
             }
           } catch (error) {
-            console.error("Erro ao buscar os empreiteiros ou orçamentos:", error);
+            console.error("Erro ao buscar os orçamentos:", error);
           }
         }
       };
   
       fetchEmpreiteiro();
-    }, [navigate]);
+    }, [empreiteiro, donoObra, navigate, setOrcamentos]);
+
+    const handleDeleteOrcamento=async(row)=>{
+      const response = api.delete
+    }
     
     const getStatusIcon = (row) => {
-      if (row.data_aprovacao===null){
+      if (row.data_aprovacao===null && row.data_compactuacao===null){
         return { status: "Em Análise", icon: IoMdClock, color: "blue.600" }
+      }else if(row.data_aprovacao!==null && row.data_compactuacao===null){
+        return { status: "Esperando empreiteiro", icon: IoMdClock, color: "yellow.600"  }
+      } else if(row.data_compactuacao!==null && row.data_aprovacao===null){
+        return { status: "Esperando dono da obra",  icon: IoMdClock, color: "yellow.600" }
       }else{
-        return { status: "Finalizado", icon: MdCheckCircle, color: "green"  }
+        return {status: "Finalizado", icon: MdCheckCircle, color: "green" };
       }
       // switch (status) {
       //   case "Finalizado":
@@ -86,10 +124,10 @@ export default function TabelaOrcamento() {
 
     const handleViewPdf = (row) => {
       setSelectedRow(row);
-      console.log(row);
-      
       setPdfVisible(true);
     };
+
+    
     return (
         <SimpleGrid  gap='20px' mb='20px' backgroundColor="white" borderRadius="20px" overflow="hidden">
         <TableContainer>
@@ -100,7 +138,7 @@ export default function TabelaOrcamento() {
                 <Th>Dono da obra</Th>
                 <Th>Data do orçamento</Th>
                 <Th>Status</Th>
-                <Th>Visualizar</Th>
+                <Th>Opções</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -125,7 +163,46 @@ export default function TabelaOrcamento() {
                         aria-label="Visualizar"
                         icon={<IoMdEye />}
                         onClick={() => handleViewPdf(row)}
+                        mr={1}
                       />
+                       {donoObra && !row.data_aprovacao && (
+                        <>
+                          <IconButton
+                            backgroundColor="green"
+                            color="white"
+                            aria-label="Aprovar Orçamento"
+                            icon={<MdCheckCircle />}
+                            onClick={() => handleAprovarOrcamento(row)}
+                            mr={1}
+                          />
+                          <IconButton
+                            backgroundColor="#c51010"
+                            color="white"
+                            aria-label="Cancelar"
+                            icon={<MdCancel />}
+                          />
+                        </>
+                      )}
+
+                      {/* Condição para exibir o botão para o empreiteiro (se não tiver data de compactuação) */}
+                      {empreiteiro && !row.data_compactuacao && (
+                        <>
+                          <IconButton
+                            backgroundColor="green"
+                            color="white"
+                            aria-label="Compactuar Orçamento"
+                            icon={<MdCheckCircle />}
+                            onClick={() => handleAprovarOrcamento(row)}
+                            mr={1}
+                          />
+                          <IconButton
+                            backgroundColor="#c51010"
+                            color="white"
+                            aria-label="Cancelar"
+                            icon={<MdCancel />}
+                          />
+                        </>
+                      )}
                     </Td>
                   </Tr>
                 );

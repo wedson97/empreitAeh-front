@@ -12,18 +12,19 @@ import {
   TableCaption,
   TableContainer,
   IconButton,
-  Text
+  Text,
+  Fade
 } from "@chakra-ui/react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoMdEye, IoMdClock } from "react-icons/io";
+import { MdBuild } from "react-icons/md";
 import api from "api/requisicoes";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "context/UseContext";
 import PdfObra from "./PdfObra";
 
-export default function TabelaObras() {
-  const { obras, setObras } = useUser();
-  const { empreiteiro, setEmpreiteiro } = useUser();
+export default function TabelaObras({ handleGerenciar}) {
+  const { obras, setObras, empreiteiro, donoObra } = useUser();
   const navigate = useNavigate();
   const [isPdfVisible, setPdfVisible] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -32,30 +33,41 @@ export default function TabelaObras() {
     window.scrollTo(0, 0);
     const fetchEmpreiteiro = async () => {
       try {
-        const empreiteiros = await api.get("/empreiteiros");
-        const nome_empreiteiro_logado = localStorage.getItem("usuario");
-
-        const empreiteiroFiltrado = empreiteiros.data.filter(e => e.nome === nome_empreiteiro_logado);
-        if (empreiteiroFiltrado.length > 0) {
-          setEmpreiteiro(empreiteiroFiltrado[0]);
-          const empreiteiroId = empreiteiroFiltrado[0].id;
-          const response = await api.get(`/empreiteiro/${empreiteiroId}/obras`);
+        let response;
+        if (empreiteiro) {
+          response = await api.get(`/empreiteiro/${empreiteiro.id}/obras`);
+        } else if (donoObra) {
+          response = await api.get(`/dono_obra/${donoObra.id}/obras`);
+        }
+        if(response){
           setObras(response.data);
         }
+        
       } catch (error) {
         console.error("Erro ao buscar os empreiteiros ou orçamentos:", error);
       }
     };
 
     fetchEmpreiteiro();
-  }, [navigate]);
+  }, [empreiteiro, navigate]);
 
   const getStatusIcon = (row) => {
-    if (row.orcamento.data_aprovacao !== null) {
-      return { status: "Em Andamento", icon: IoMdClock, color: "blue.600" };
-    }
-    return { status: "Pendente", icon: IoMdClock, color: "yellow.600" };
+    // return { status: "Em Andamento", icon: IoMdClock, color: "blue.600" }
+    if (row.orcamento.data_aprovacao === null || row.orcamento.data_compactuacao === null) {
+      return { status: "Esperando aprovação", icon: IoMdClock, color: "yellow.600" };
+      
+    }return { status: "Em Andamento", icon: IoMdClock, color: "blue.600" };
+    
   };
+  // if (row.data_aprovacao===null && row.data_compactuacao===null){
+  //   return { status: "Em Análise", icon: IoMdClock, color: "blue.600" }
+  // }else if(row.data_aprovacao!==null && row.data_compactuacao===null){
+  //   return { status: "Esperando empreiteiro", icon: IoMdClock, color: "yellow.600"  }
+  // } else if(row.data_compactuacao!==null && row.data_aprovacao===null){
+  //   return { status: "Esperando dono da obra",  icon: IoMdClock, color: "yellow.600" }
+  // }else{
+  //   return {status: "Finalizado", icon: MdCheckCircle, color: "green" };
+  // }
 
   const handleViewPdf = (row) => {
     setSelectedRow(row);
@@ -73,7 +85,7 @@ export default function TabelaObras() {
               <Th>Data de início</Th>
               <Th>Previsão de término</Th>
               <Th>Status</Th>
-              <Th>Visualizar</Th>
+              <Th>Opções</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -82,8 +94,8 @@ export default function TabelaObras() {
               return (
                 <Tr key={index}>
                   <Td>{row.orcamento.dono_obra.nome}</Td>
-                  <Td>{new Date(row.orcamento.data_inicio).toLocaleDateString('pt-BR')}</Td>
-                  <Td>{new Date(row.orcamento.data_termino).toLocaleDateString('pt-BR')}</Td>
+                  <Td>{new Date(row.data_inicio).toLocaleDateString('pt-BR')}</Td>
+                  <Td>{new Date(row.data_termino).toLocaleDateString('pt-BR')}</Td>
                   <Td>
                     <Flex align="center">
                       <Icon as={icon} color={color} boxSize={6} />
@@ -98,8 +110,16 @@ export default function TabelaObras() {
                       color="white"
                       aria-label="Visualizar"
                       icon={<IoMdEye />}
+                      mr={1}
                       onClick={() => handleViewPdf(row)}
                     />
+                    {empreiteiro!==null && row.orcamento.data_aprovacao!==null && row.orcamento.data_compactuacao!==null?<IconButton
+                      backgroundColor="#2b6cb0"
+                      color="white"
+                      aria-label="Gerênciar"
+                      icon={<MdBuild />}
+                      onClick={() => handleGerenciar(row)}
+                    />:null}
                   </Td>
                 </Tr>
               );

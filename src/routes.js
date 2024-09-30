@@ -6,7 +6,8 @@ import {
   MdHome,
   MdLock,
   MdMonetizationOn,
-  MdConstruction
+  MdConstruction,
+  MdEngineering
 } from 'react-icons/md';
 
 // Admin Imports
@@ -14,7 +15,7 @@ import MainDashboard from 'views/admin/default';
 import Profile from 'views/admin/profile';
 import Orcamento from 'views/admin/orcamento';
 import Obra from 'views/admin/obra';
-import PdfObra from 'views/admin/obra/components/PdfObra';
+import Funcionario from 'views/admin/funcionario/orcamento';
 
 
 // Auth Imports
@@ -78,6 +79,14 @@ const routes = [
     path: '/obras',
     icon: <Icon as={MdConstruction} width="20px" height="20px" color="inherit" />,
     component: <Obra />,
+  }
+  ,
+  {
+    name: 'Funcionario',
+    layout: '/admin',
+    path: '/funcionario',
+    icon: <Icon as={MdEngineering} width="20px" height="20px" color="inherit" />,
+    component: <Funcionario />,
   }
   // {
   //   name: 'RTL Admin',

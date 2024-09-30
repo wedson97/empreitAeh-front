@@ -26,6 +26,7 @@ import { MdNotificationsNone, MdInfoOutline } from 'react-icons/md';
 import { IoMdMoon, IoMdSunny } from 'react-icons/io';
 import { FaEthereum } from 'react-icons/fa';
 import routes from 'routes';
+import { useUser } from 'context/UseContext';
 export default function HeaderLinks(props) {
   const { secondary } = props;
   const { colorMode, toggleColorMode } = useColorMode();
@@ -44,10 +45,14 @@ export default function HeaderLinks(props) {
   );
   const nome = localStorage.getItem("usuario");
   const borderButton = useColorModeValue('secondaryGray.500', 'whiteAlpha.200');
-
+  const {setEmpreiteiro, setDonoObra, setOrcamentos, setObras} = useUser();
   const handleClick = () =>{
     localStorage.removeItem("email")
     localStorage.removeItem("usuario")
+    setEmpreiteiro(null)
+    setDonoObra(null)
+    setOrcamentos([])
+    setObras([])
   }
 
   return (

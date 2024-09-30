@@ -1,11 +1,11 @@
-/* eslint-disable */
+
 import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
-// chakra imports
 import { Box, Flex, HStack, Text, useColorModeValue } from "@chakra-ui/react";
+import { useUser } from "context/UseContext";
 
 export function SidebarLinks(props) {
-  //   Chakra color mode
+  const {empreiteiro, setEmpreiteiro} = useUser();
   let location = useLocation();
   let activeColor = useColorModeValue("gray.700", "white");
   let inactiveColor = useColorModeValue(
@@ -18,12 +18,10 @@ export function SidebarLinks(props) {
 
   const { routes } = props;
 
-  // verifies if routeName is the one active (in browser input)
-  const activeRoute = (routeName) => {
+ const activeRoute = (routeName) => {
     return location.pathname.includes(routeName);
   };
 
-  // this function creates the links from the secondary accordions (for example auth -> sign-in -> default)
   const createLinks = (routes) => {
     return routes.map((route, index) => {
       if (route.category) {
@@ -51,55 +49,60 @@ export function SidebarLinks(props) {
         route.layout === "/auth" ||
         route.layout === "/rtl"
       ) {
+        // Condição para mostrar a rota de funcionário apenas se empreiteiro for diferente de null
+        if (route.name === "Funcionario" && !empreiteiro) {
+          return null;
+        }
+  
         return (
           <>
-          {route.icon && route.name !== "Sign In" && route.name !== "Principal"? (
-            <NavLink key={index} to={route.layout + route.path}>
-              <Box>
-                <HStack
-                  spacing={activeRoute(route.path.toLowerCase()) ? "22px" : "26px"}
-                  py="5px"
-                  ps="10px"
-                >
-                  <Flex w="100%" alignItems="center" justifyContent="center">
+            {route.icon && route.name !== "Sign In" && route.name !== "Principal" ? (
+              <NavLink key={index} to={route.layout + route.path}>
+                <Box>
+                  <HStack
+                    spacing={activeRoute(route.path.toLowerCase()) ? "22px" : "26px"}
+                    py="5px"
+                    ps="10px"
+                  >
+                    <Flex w="100%" alignItems="center" justifyContent="center">
+                      <Box
+                        color={
+                          activeRoute(route.path.toLowerCase()) ? '#e8661e' : textColor
+                        }
+                        me="18px"
+                      >
+                        {route.icon}
+                      </Box>
+                      <Text
+                        me="auto"
+                        color={
+                          activeRoute(route.path.toLowerCase()) ? activeColor : textColor
+                        }
+                        fontWeight={
+                          activeRoute(route.path.toLowerCase()) ? "bold" : "normal"
+                        }
+                      >
+                        {route.name}
+                      </Text>
+                    </Flex>
                     <Box
-                      color={
-                        activeRoute(route.path.toLowerCase()) ? '#e8661e' : textColor
+                      h="36px"
+                      w="4px"
+                      bg={
+                        activeRoute(route.path.toLowerCase()) ? '#e8661e' : "transparent"
                       }
-                      me="18px"
-                    >
-                      {route.icon}
-                    </Box>
-                    <Text
-                      me="auto"
-                      color={
-                        activeRoute(route.path.toLowerCase()) ? activeColor : textColor
-                      }
-                      fontWeight={
-                        activeRoute(route.path.toLowerCase()) ? "bold" : "normal"
-                      }
-                    >
-                      {route.name}
-                    </Text>
-                  </Flex>
-                  <Box
-                    h="36px"
-                    w="4px"
-                    bg={
-                      activeRoute(route.path.toLowerCase()) ? '#e8661e' : "transparent"
-                    }
-                    borderRadius="5px"
-                  />
-                </HStack>
-              </Box>
-            </NavLink>
-          ) : null}
-
+                      borderRadius="5px"
+                    />
+                  </HStack>
+                </Box>
+              </NavLink>
+            ) : null}
           </>
         );
       }
     });
   };
+  
   //  BRAND
   return createLinks(routes);
 }

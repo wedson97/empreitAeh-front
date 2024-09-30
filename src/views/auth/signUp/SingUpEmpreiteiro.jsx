@@ -15,6 +15,7 @@ import {
   InputRightElement,
   Text,
   useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
 // Custom components
 import DefaultAuth from "layouts/auth/Default";
@@ -24,7 +25,6 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiEyeCloseLine } from "react-icons/ri";
 import api from "api/requisicoes";
 import { useNavigate } from 'react-router-dom';
-import AlertaCadastro from "../signIn/AlertaCadastro";
 import { useUser } from "context/UseContext";
 
 function SignUpEmpreiteiro() {
@@ -41,7 +41,7 @@ function SignUpEmpreiteiro() {
     cnpj: null,
     email: '',
     senha: '',
-    tipo: 'empreiteiro'
+    tipo_usuario: 3
   });
  const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -60,7 +60,7 @@ function SignUpEmpreiteiro() {
 
     window.scrollTo(0, 0);
   }, []);
-
+  const toast = useToast();
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -74,17 +74,23 @@ function SignUpEmpreiteiro() {
     try {
       const response = await api.post("/empreiteiros",formData)
       setFormData({nome: '',cpf: '',cnpj: '',email: '',senha: '',tipo: ''})
-      setAlertaCadastro({status:"success", titulo:"Cadastrado com sucesso!",descricao: `O ${formData.tipo} ${formData.nome} foi cadastro com sucesso!`, duracao:3000, visivel:true})
-      setTimeout(() => {
-        setAlertaCadastro(prev => ({ ...prev, visivel: false }));
-      }, 3000);
+      toast({
+        title: "Cadastrado com sucesso!",
+        description: `O empreiteiro ${formData.nome} foi cadastro com sucesso!`,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        });
+      
       navigate("/auth/sign-in")
     } catch (error) {
-      console.log(error);
-      setAlertaCadastro({status:"error", titulo:"Erro no cadastro!",descricao: `${error.response.data.message}`, duracao:3000, visivel:true})
-      setTimeout(() => {
-        setAlertaCadastro(prev => ({ ...prev, visivel: false }));
-      }, 3000);
+      toast({
+        title: "Erro no cadastro!",
+        description:  `${error.response.data.message}`,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        });
     }
   }
 
@@ -280,8 +286,6 @@ function SignUpEmpreiteiro() {
             </Button>
           </FormControl>
           </form>
-          <AlertaCadastro 
-          />
         </Flex>
       </Flex>
     </DefaultAuth>

@@ -92,13 +92,13 @@ function Principal() {
   {isOpen ? (
     <Box pb={4} display={{ md: 'none' }}>
       <Stack as={'nav'} spacing={3} color={"white"}>
-        <Link href="#home" onClick={onClose}>
+        <Link href="#home" onClick={onClose} to={"/auth/sign-up/empreiteiro"}>
           Quero ser empreiteiro
         </Link>
-        <Link href="#home" onClick={onClose}>
+        <Link href="#home" onClick={onClose} to={"/auth/sign-up/donoObra"}>
           Quero construir
         </Link>
-        <Link href="#home" onClick={onClose}>
+        <Link href="#home" onClick={onClose} to={"/auth/sign-in"} >
           Sing in
         </Link>
       </Stack>

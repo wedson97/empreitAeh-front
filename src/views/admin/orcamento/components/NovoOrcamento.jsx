@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Button, FormControl, FormLabel, Input, Textarea, SimpleGrid } from "@chakra-ui/react";
+import { Box, Button, FormControl, FormLabel, Input, Textarea, SimpleGrid, useToast } from "@chakra-ui/react";
 import InputMask from 'react-input-mask';
 import api from "api/requisicoes";
 import { useUser } from "context/UseContext";
@@ -11,9 +11,35 @@ export default function NovoOrcamento({setShowTabela}) {
     descricao: "",
     valor_metro: 0.0,
     qtd_metros: 0,
+  });
+  const [formDataEndereco, setFormDataEndereco] = useState({
+    cep: "",
+    rua: "",
+    numero: "",
+    cidade: "",
+    bairro: "",
     data_inicio: "",
     data_termino: ""
   });
+
+  const [formDataObra, setFormDataObra] = useState({
+    id_orcamento: '',
+    id_dono_obra: ''
+  });
+
+  // const handleSelectOrcamento = (e) => {
+  //   const selectedOrcamentoId = e.target.value;
+
+  //   const selectedOrcamento = orcamentos.find(orcamento => orcamento.id === parseInt(selectedOrcamentoId));
+
+  //   if (selectedOrcamento) {
+  //     setFormDataObra({
+  //       ...formDataObra,
+  //       id_orcamento: selectedOrcamento.id,
+  //       id_dono_obra: selectedOrcamento.dono_obra.id 
+  //     });
+  //   }
+  // };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,43 +49,65 @@ export default function NovoOrcamento({setShowTabela}) {
     });
   };
 
+  const handleChangeEndereco = (e) => {
+    const { name, value } = e.target;
+    setFormDataEndereco({
+      ...formDataEndereco,
+      [name]: name === "numero" ? parseInt(value) || 0 : value,
+    });
+  };
+  const toast = useToast();
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const data = new FormData();
-    data.append('cpf_cliente', formData.cpf_cliente);
-    data.append('descricao', formData.descricao);
-    data.append('valor_metro', formData.valor_metro);
-    data.append('qtd_metros', formData.qtd_metros);
-    data.append('data_inicio', formData.data_inicio);
-    data.append('data_termino', formData.data_termino);
     try {
-      const empreiteiro = await api.get("/empreiteiros");
-      const nome_empreiteiro_logado = localStorage.getItem("usuario");
-      console.log(nome_empreiteiro_logado);
-      
-      // Filtra o empreiteiro pelo nome
-      const empreiteiroFiltrado = empreiteiro.data.filter(e => e.nome === nome_empreiteiro_logado);
-  
-      
-      const response = await api.post(`/empreiteiro/${empreiteiroFiltrado[0].id}/orcamentos`,formData)
-      if(response.status===201){
-        console.log(response);
-        setAlertaOrcamento({status:"success", titulo:"Orçamento realizado!",descricao: `O orçamento foi cadastro com sucesso!`, duracao:3000, visivel:true})
-        setShowTabela(false);
-        setFormData({cpf_cliente: "",descricao: "",valor_metro: 0.0,qtd_metros: 0,data_inicio: "",data_termino: ""})
-        setTimeout(() => {
-          setAlertaOrcamento(prev => ({ ...prev, visivel: false }));
-        }, 3000);
+        const nome_empreiteiro_logado = localStorage.getItem("usuario");
+        const { data: empreiteiros } = await api.get("/empreiteiros");
+        const empreiteiroFiltrado = empreiteiros.find(e => e.nome === nome_empreiteiro_logado);
 
+        if (!empreiteiroFiltrado) throw new Error("Empreiteiro não encontrado");
+
+        const response = await api.post(`/empreiteiro/${empreiteiroFiltrado.id}/orcamentos`, formData);
+        if (response.status !== 201) throw new Error("Erro ao criar orçamento");
+
+        const { data: orcamento } = response;
+        setFormDataObra(prev => ({
+            ...prev,
+            id_orcamento: orcamento.id,
+            id_dono_obra: orcamento.dono_obra.id,
+        }));
+
+        const responseObras = await api.post(`/empreiteiro/${empreiteiroFiltrado.id}/orcamento/${orcamento.id}/obra`, formDataEndereco);
+        console.log(responseObras.data);
+        
+        if (responseObras.status !== 201) throw new Error("Erro ao criar obra");
+
+        // const responsePutOrcamento = await api.put(`/empreiteiro/${empreiteiroFiltrado.id}/orcamentos/${orcamento.id}`, {
+        //     data_aprovacao: new Date().toLocaleDateString('pt-BR').split('/').reverse().join('-'),
+        // });
+        // if (responsePutOrcamento.status !== 200) throw new Error("Erro ao atualizar orçamento");
+        toast({
+          title: "Obra iniciada!",
+          description: "A obra foi iniciada com sucesso!",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+          });
+
+        setShowTabela(false);
+        setFormDataEndereco({ cep: null, rua: "", numero: null, cidade: "", bairro: "" });
+
+      } catch (error) {
+          console.error(error);
+          setAlertaOrcamento({
+              status: "error",
+              titulo: "Erro",
+              descricao: "Houve um erro ao processar a solicitação.",
+              duracao: 3000,
+              visivel: true,
+          });
       }
-    } 
-    catch (AxiosError) {
-      setAlertaOrcamento({status:"error", titulo:"Falha no orçamento",descricao: `Verifique as informações e tente novamente`, duracao:3000, visivel:true})
-      setTimeout(() => {
-        setAlertaOrcamento(prev => ({ ...prev, visivel: false }));
-      }, 3000);
-    }
   };
 
   const handleInputChange = (e) => {
@@ -99,7 +147,7 @@ export default function NovoOrcamento({setShowTabela}) {
                   placeholder='xxx.xxx.xxx-xx'
                   mb='24px'
                   fontWeight='500'
-                  size='lg'
+                  size='md'
                   
                 />
               )}
@@ -136,7 +184,7 @@ export default function NovoOrcamento({setShowTabela}) {
             type="date"
             name="data_inicio"
             value={formData.data_inicio}
-            onChange={handleChange}
+            onChange={handleChangeEndereco}
           />
         </FormControl>
 
@@ -147,7 +195,57 @@ export default function NovoOrcamento({setShowTabela}) {
             type="date"
             name="data_termino"
             value={formData.data_termino}
-            onChange={handleChange}
+            onChange={handleChangeEndereco}
+          />
+        </FormControl>
+        <FormControl id="cep">
+          <FormLabel>CEP</FormLabel>
+          <Input
+            isRequired={true}
+            type="number"
+            name="cep"
+            value={formDataEndereco.cep}
+            onChange={handleChangeEndereco}
+          />
+        </FormControl>
+
+        <FormControl id="cidade">
+          <FormLabel>Cidade</FormLabel>
+          <Input
+            isRequired={true}
+            name="cidade"
+            value={formDataEndereco.cidade}
+            onChange={handleChangeEndereco}
+          />
+        </FormControl>
+
+        <FormControl id="rua">
+          <FormLabel>Rua</FormLabel>
+          <Input
+            isRequired={true}
+            name="rua"
+            value={formDataEndereco.rua}
+            onChange={handleChangeEndereco}
+          />
+        </FormControl>
+
+        <FormControl id="bairro">
+          <FormLabel>Bairro</FormLabel>
+          <Input
+            isRequired={true}
+            name="bairro"
+            value={formDataEndereco.bairro}
+            onChange={handleChangeEndereco}
+          />
+        </FormControl>
+
+        <FormControl id="numero">
+          <FormLabel>Número</FormLabel>
+          <Input
+            isRequired={true}
+            name="numero"
+            value={formDataEndereco.numero}
+            onChange={handleChangeEndereco}
           />
         </FormControl>
       </SimpleGrid>
@@ -162,6 +260,7 @@ export default function NovoOrcamento({setShowTabela}) {
           rows={4}
         />
       </FormControl>
+      
 
       <Button backgroundColor="#e8661e" color="white" onClick={handleSubmit} mt={4}>
         Enviar

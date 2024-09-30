@@ -15,16 +15,15 @@ import {
   InputRightElement,
   Text,
   useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
 import { HSeparator } from "components/separator/Separator";
 import DefaultAuth from "layouts/auth/Default";
-// Assets
 import illustration from "assets/img/auth/empreitaehBranco.png";
 import { FcGoogle } from "react-icons/fc";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiEyeCloseLine } from "react-icons/ri";
 import { useNavigate } from 'react-router-dom';
-import AlertaCadastro from "./AlertaCadastro";
 import api from "api/requisicoes";
 import { useUser } from "context/UseContext";
 
@@ -43,6 +42,7 @@ function SignIn() {
     { bg: "whiteAlpha.200" }
   );
   const navigate = useNavigate();
+  const {setDonoObra, setEmpreiteiro} = useUser();
   useEffect(() => {
     const usuario = localStorage.getItem("usuario");
     const email = localStorage.getItem("email");
@@ -56,10 +56,7 @@ function SignIn() {
   
   const [show, setShow] = React.useState(false);
   const handleClick = () => setShow(!show);
-  const {login, setLogin} = useUser();
-
-  const [alertaCadastro, setAlertaCadastro] = useState({status:"", titulo:"", descricao:"", duracao:3000, visivel:false})
-
+ 
   const [formData, setFormData] = useState({
     email: '',
     senha: ''
@@ -72,7 +69,8 @@ function SignIn() {
       [name]: value,
     }));
   };
-
+  const toast = useToast();
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -81,20 +79,37 @@ function SignIn() {
     data.append('senha', formData.senha);
     try {
       const response = await api.post("/login",formData)
-      if(response.status==200){
-        console.log(response);
+      if(response.status===200){
+        
+        if (response.data.tipo_usuario.id === 3) {
+          setEmpreiteiro(response.data);
+          localStorage.setItem("userType", "empreiteiro");
+        } else if (response.data.tipo_usuario.id === 2) {
+          setDonoObra(response.data);
+          localStorage.setItem("userType", "dono_de_obra");
+        }
         
         setFormData({email: '',senha: ''})
         navigate("/admin/default")
-        setLogin(response.data)
         localStorage.setItem("email",response.data.email)
         localStorage.setItem("usuario", response.data.nome)
+      }else{
+        toast({
+          title: "Falha no login",
+          description: `Verifique suas credenciais!`,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+          });
       }
     } catch (AxiosError) {
-      setAlertaCadastro({status:"error", titulo:"Falha no login",descricao: `Verifique suas credenciais!`, duracao:3000, visivel:true})
-      setTimeout(() => {
-        setAlertaCadastro(prev => ({ ...prev, visivel: false }));
-      }, 3000);
+      toast({
+        title: "Falha no login",
+        description: `Verifique suas credenciais!`,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        });
     }
   }
 
@@ -242,7 +257,6 @@ function SignIn() {
               </FormControl>
               <NavLink to='/auth/forgot-password'>
                 <Text
-                  // color={textColorBrand}
                   color={'#e8661e'}
                   fontSize='sm'
                   w='134px'
@@ -264,13 +278,6 @@ function SignIn() {
               Entrar
             </Button>
             </form>
-            <AlertaCadastro
-            status={alertaCadastro.status} 
-            titulo={alertaCadastro.titulo}
-            descricao={alertaCadastro.descricao} 
-            duracao={alertaCadastro.duracao}
-            visivel={alertaCadastro.visivel}
-          />
           </FormControl>
           
           <Flex
@@ -279,19 +286,6 @@ function SignIn() {
             alignItems='start'
             maxW='100%'
             mt='0px'>
-            {/* <Text color={textColorDetails} fontWeight='400' fontSize='14px'>
-              Não tem cadastro ?
-              <NavLink to='/auth/sign-up'>
-                <Text
-                  // color={textColorBrand}
-                  color={'#e8661e'}
-                  as='span'
-                  ms='5px'
-                  fontWeight='500'>
-                  Criar conta
-                </Text>
-              </NavLink>
-            </Text> */}
           </Flex>
         </Flex>
       </Flex>

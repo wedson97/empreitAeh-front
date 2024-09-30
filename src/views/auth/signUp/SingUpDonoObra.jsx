@@ -15,6 +15,7 @@ import {
   InputRightElement,
   Text,
   useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
 import DefaultAuth from "layouts/auth/Default";
 import illustration from "assets/img/auth/empreitaehBranco.png";
@@ -22,11 +23,8 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiEyeCloseLine } from "react-icons/ri";
 import api from "api/requisicoes";
 import { useNavigate } from 'react-router-dom';
-import AlertaCadastro from "../signIn/AlertaCadastro";
-import { useUser } from "context/UseContext";
 
 function SingUpDonoObra() {
-  const {setAlertaCadastro} = useUser();
   const textColor = useColorModeValue("navy.700", "white");
   const textColorSecondary = "gray.400";
   const brandStars = useColorModeValue("brand.500", "brand.400");
@@ -38,7 +36,7 @@ function SingUpDonoObra() {
     cnpj: null,
     email: '',
     senha: '',
-    tipo: 'cliente'
+    id_tipo_usuario: 2
   });
   
   const handleInputChange = (e) => {
@@ -59,28 +57,34 @@ function SingUpDonoObra() {
 
     window.scrollTo(0, 0);
   }, []);
-
+  const toast = useToast();
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const data = new FormData();
-    data.append('nome', formData.nome);
-    data.append('cpf', formData.cpf);
-    data.append('cnpj', formData.cnpj);
-    data.append('email', formData.email);
-    data.append('senha', formData.senha);
-    data.append('tipo', formData.tipo);
-    const response = await api.post("/donoObra",formData)
-    if(response.status===200){
-      setFormData({nome: '',cpf: '',cnpj: '',email: '',senha: '',tipo: ''})
-      setAlertaCadastro({status:"success", titulo:"Cadastrado com sucesso!",descricao: `O ${formData.tipo} ${formData.nome} foi cadastro com sucesso!`, duracao:3000, visivel:true})
-      setTimeout(() => {
-        setAlertaCadastro(prev => ({ ...prev, visivel: false }));
-      }, 3000);
-      navigate("/auth/sign-in")
+    try {
+      const response = await api.post("/donos_obra", formData);
+      if (response.status === 201) {
+        setFormData({ nome: '', cpf: '', cnpj: '', email: '', senha: '', tipo: '' });
+        toast({
+          title: "Cadastrado com sucesso!",
+          description: `O dono de obra ${formData.nome} foi cadastrado com sucesso!`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        navigate("/auth/sign-in");
+      }
+    } catch (error) {
+      console.error("Erro ao cadastrar o dono de obra:", error);
+      toast({
+        title: "Erro ao cadastrar!",
+        description: `${error.response.data.message}`,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
     }
+  };
   
-  }
 
   return (
     <DefaultAuth illustrationBackground={illustration} image={illustration}>
@@ -150,7 +154,7 @@ function SingUpDonoObra() {
               mask="999.999.999-99"
               value={formData.cpf}
               onChange={handleInputChange}
-              maskChar={null} // Isso remove o caractere de máscara visível
+              maskChar={null}
             >
               {() => (
                 <Input
@@ -191,7 +195,7 @@ function SingUpDonoObra() {
               mask="99.999.999/9999-99"
               value={formData.cnpj}
               onChange={handleInputChange}
-              maskChar={null} // Isso remove o caractere de máscara visível
+              maskChar={null}
             >
               {() => (
                 <Input
@@ -274,8 +278,7 @@ function SingUpDonoObra() {
             </Button>
           </FormControl>
           </form>
-          <AlertaCadastro
-          />
+          
         </Flex>
       </Flex>
     </DefaultAuth>
