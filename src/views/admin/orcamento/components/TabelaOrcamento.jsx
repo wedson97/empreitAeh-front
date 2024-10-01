@@ -80,6 +80,7 @@ export default function TabelaOrcamento() {
             if (empreiteiro) {
               response = await api.get(`/empreiteiro/${empreiteiro.id}/orcamentos`);
             } else if (donoObra) {
+              
               response = await api.get(`/dono_obra/${donoObra.id}/orcamentos`);
             }
             if (response) {

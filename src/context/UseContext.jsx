@@ -20,8 +20,8 @@ export const UserProvider = ({ children }) => {
     const performLogin = async () => {
       const email = localStorage.getItem('email');
       const usuario = localStorage.getItem('usuario');
-      const tipo_usuario = localStorage.getItem('usuario');
-
+      const tipo_usuario = localStorage.getItem('userType');
+      
       if (email && usuario) {
         try {
           if (tipo_usuario === "empreiteiro") {
@@ -32,10 +32,9 @@ export const UserProvider = ({ children }) => {
               );
           
               if (filteredEmpreiteiros.length > 0) {
-                setEmpreiteiro(filteredEmpreiteiros[0]); // Armazena o primeiro empreiteiro correspondente
+                setEmpreiteiro(filteredEmpreiteiros[0]);
                 localStorage.setItem("userType", "empreiteiro");
               } else {
-                // Caso não encontre nenhum empreiteiro correspondente
                 toast({
                   title: "Empreiteiro não encontrado",
                   description: "Verifique suas credenciais!",
@@ -53,18 +52,17 @@ export const UserProvider = ({ children }) => {
                 isClosable: true,
               });
             }
-          } else if (tipo_usuario === "dono_obra") {
-            const response = await api.get("/empreiteiros");
+          } else if (tipo_usuario === "dono_de_obra") {
+            const response = await api.get("/donos_obra");
             if (response.status === 200) {
               const filteredDonoObra = response.data.filter(donoObra => 
                 donoObra.nome === usuario && donoObra.email === email
               );
           
               if (filteredDonoObra.length > 0) {
-                setDonoObra(filteredDonoObra[0]); // Armazena o primeiro dono de obra correspondente
+                setDonoObra(filteredDonoObra[0]);
                 localStorage.setItem("userType", "dono_de_obra");
               } else {
-                // Caso não encontre nenhum dono de obra correspondente
                 toast({
                   title: "Dono de obra não encontrado",
                   description: "Verifique suas credenciais!",
