@@ -45,7 +45,7 @@ export default function ComplexTable(props) {
           fontSize={{ sm: '10px', lg: '12px' }}
           color="gray.400"
         >
-          NAME
+          Dono da obra
         </Text>
       ),
       cell: (info) => (
@@ -108,7 +108,7 @@ export default function ComplexTable(props) {
           fontSize={{ sm: '10px', lg: '12px' }}
           color="gray.400"
         >
-          DATE
+          data de termino
         </Text>
       ),
       cell: (info) => (
@@ -126,14 +126,18 @@ export default function ComplexTable(props) {
           fontSize={{ sm: '10px', lg: '12px' }}
           color="gray.400"
         >
-          PROGRESS
+          PROGRESSO
         </Text>
       ),
       cell: (info) => (
         <Flex align="center">
           <Progress
             variant="table"
-            colorScheme="brandScheme"
+            sx={{
+              "& > div": {
+                backgroundColor: "#e8661e",
+              },
+            }}
             h="8px"
             w="108px"
             value={info.getValue()}
@@ -168,7 +172,7 @@ export default function ComplexTable(props) {
           fontWeight="700"
           lineHeight="100%"
         >
-          Complex Table
+          Obras
         </Text>
         <Menu />
       </Flex>

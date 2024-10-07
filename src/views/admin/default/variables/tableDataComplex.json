@@ -1,24 +1,24 @@
 [
   {
-    "name":"Horizon UI PRO",
+    "name":"Obra 1",
     "status": "Approved",
     "date": "18 Apr 2022",
     "progress": 75.5  
   },
   {
-    "name":"Horizon UI Free",
+    "name":"Obra 2",
     "status": "Disable",
     "date": "18 Apr 2022",
     "progress": 25.5  
   },
   {
-    "name":"Marketplace",
+    "name":"Obra 3",
     "status": "Error",
     "date": "20 May 2021",
     "progress": 90  
   },
   {
-    "name":"Weekly Updates",
+    "name":"Obra 4",
     "status": "Approved",
     "date": "12 Jul 2021",
     "progress": 50.5  

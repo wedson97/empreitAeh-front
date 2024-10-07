@@ -86,7 +86,7 @@ function SignIn() {
           localStorage.setItem("userType", "empreiteiro");
         } else if (response.data.tipo_usuario.id === 2) {
           setDonoObra(response.data);
-          localStorage.setItem("userType", "dono_de_obra");
+          localStorage.setItem("userType", "dono_obra");
         }
         
         setFormData({email: '',senha: ''})

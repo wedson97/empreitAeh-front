@@ -17,7 +17,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { IoMdEye, IoMdClock } from "react-icons/io";
-import { MdBuild } from "react-icons/md";
+import { MdBuild, MdCheckCircle } from "react-icons/md";
 import api from "api/requisicoes";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "context/UseContext";
@@ -42,22 +42,42 @@ export default function TabelaObras({ handleGerenciar}) {
         if(response){
           setObras(response.data);
         }
-        
       } catch (error) {
         console.error("Erro ao buscar os empreiteiros ou orçamentos:", error);
       }
     };
 
     fetchEmpreiteiro();
-  }, [empreiteiro, navigate]);
+  }, [empreiteiro, navigate, donoObra]);
 
+  const [atividadesPorObra, setAtividadesPorObra] = useState({});
+
+  const carregarAtividades = async (row) => {
+    try {
+      if (!atividadesPorObra[row.id]) {
+        const response = await api.get(`/empreiteiro/${empreiteiro.id}/obra/${row.id}/atividades`);
+        const atividadesNaoFinalizadas = response.data.filter((atividade) => atividade.finalizado === false);
+        
+        setAtividadesPorObra((prev) => ({
+          ...prev,
+          [row.id]: atividadesNaoFinalizadas
+        }));
+      }
+    } catch (error) {
+      console.error("Erro ao carregar atividades:", error);
+    }
+  };
+  
   const getStatusIcon = (row) => {
-    // return { status: "Em Andamento", icon: IoMdClock, color: "blue.600" }
+    const atividadesNaoFinalizadas = atividadesPorObra[row.id] || [];
+    
     if (row.orcamento.data_aprovacao === null || row.orcamento.data_compactuacao === null) {
       return { status: "Esperando aprovação", icon: IoMdClock, color: "yellow.600" };
-      
-    }return { status: "Em Andamento", icon: IoMdClock, color: "blue.600" };
-    
+    } else if (row.orcamento.data_aprovacao !== null && row.orcamento.data_compactuacao !== null && atividadesNaoFinalizadas.length > 0) {
+      return { status: "Em Andamento", icon: IoMdClock, color: "blue.600" };
+    } else {
+      return { status: "Finalizado", icon: MdCheckCircle, color: "green" };
+    }
   };
   // if (row.data_aprovacao===null && row.data_compactuacao===null){
   //   return { status: "Em Análise", icon: IoMdClock, color: "blue.600" }
@@ -68,6 +88,11 @@ export default function TabelaObras({ handleGerenciar}) {
   // }else{
   //   return {status: "Finalizado", icon: MdCheckCircle, color: "green" };
   // }
+
+  const handleClickGerencia = async (row)=>{
+    handleGerenciar(row)
+    await carregarAtividades(row);
+  }
 
   const handleViewPdf = (row) => {
     setSelectedRow(row);
@@ -118,7 +143,7 @@ export default function TabelaObras({ handleGerenciar}) {
                       color="white"
                       aria-label="Gerênciar"
                       icon={<MdBuild />}
-                      onClick={() => handleGerenciar(row)}
+                      onClick={() => handleClickGerencia(row)}
                     />:null}
                   </Td>
                 </Tr>

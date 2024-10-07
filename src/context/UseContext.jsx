@@ -52,7 +52,7 @@ export const UserProvider = ({ children }) => {
                 isClosable: true,
               });
             }
-          } else if (tipo_usuario === "dono_de_obra") {
+          } else if (tipo_usuario === "dono_obra") {
             const response = await api.get("/donos_obra");
             if (response.status === 200) {
               const filteredDonoObra = response.data.filter(donoObra => 
@@ -61,7 +61,7 @@ export const UserProvider = ({ children }) => {
           
               if (filteredDonoObra.length > 0) {
                 setDonoObra(filteredDonoObra[0]);
-                localStorage.setItem("userType", "dono_de_obra");
+                localStorage.setItem("userType", "dono_obra");
               } else {
                 toast({
                   title: "Dono de obra não encontrado",
