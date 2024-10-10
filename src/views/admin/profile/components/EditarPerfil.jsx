@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, FormLabel, Input, SimpleGrid, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, useDisclosure, useToast } from "@chakra-ui/react";
+import { Box, Button, FormControl, FormLabel, Input, SimpleGrid, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, useDisclosure, useToast, Heading } from "@chakra-ui/react";
 import api from "api/requisicoes";
 import { useUser } from "context/UseContext";
 import React, { useState, useEffect } from "react";
@@ -91,6 +91,7 @@ export default function EditarPerfil({handleToggleEditarPerfil}) {
       shadow="md"
     >
       <form onSubmit={handleSubmit}>
+
         <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
           <FormControl id="nome">
             <FormLabel>Nome</FormLabel>
@@ -177,6 +178,7 @@ export default function EditarPerfil({handleToggleEditarPerfil}) {
               fontWeight="500"
             />
           </FormControl>
+
         </SimpleGrid>
 
         <Box display="flex" justifyContent="flex-end" mt={4}>

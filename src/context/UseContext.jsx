@@ -15,6 +15,7 @@ export const UserProvider = ({ children }) => {
   const [donoObra, setDonoObra] = useState(null);
   // FUNCIONARIOS
   const [funcionarios, setFuncionarios] = useState([]);
+
   const toast = useToast();
   useEffect(() => {
     const performLogin = async () => {
@@ -95,8 +96,8 @@ export const UserProvider = ({ children }) => {
       }
     };
 
-    performLogin(); // Chama a função de login
-  }, []); // Adicione as dependências necessárias
+    performLogin();
+  }, []);
   return (
     <UserContext.Provider value={{orcamentos, setOrcamentos, obras, setObras,empreiteiro, setEmpreiteiro, donoObra, setDonoObra, funcionarios, setFuncionarios }}>
       {children}

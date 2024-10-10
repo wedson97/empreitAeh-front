@@ -152,10 +152,12 @@ export default function Atividades({ gerenciarObra, handleAtividades, setAtivida
             rows={4}
           />
         </FormControl>
-
-        <Button backgroundColor="#e8661e" color="white" onClick={handleSubmit} mt={4}>
-          Enviar
-        </Button>
+        <Box display="flex" justifyContent="flex-end" mt={4}>
+          <Button backgroundColor="#e8661e" color="white" onClick={handleSubmit} mt={4}>
+            Enviar
+          </Button>
+        </Box>
+        
       </Box>
     </>
   );

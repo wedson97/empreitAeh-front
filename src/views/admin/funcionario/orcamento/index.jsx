@@ -6,9 +6,11 @@ import { useNavigate } from "react-router-dom";
 export default function Funcionario() {
   const navegate = useNavigate();
   const [mostrarTabela, setMostrarTabela] = useState(true);
-
+  const [mostrarBotaoTabela, setMostrarBotaoTabela] = useState(true);
+  const [mostrarBotaoVoltarEditar, setMostrarBotaoVoltarEditar] = useState(false);
   const handleMostrar=()=>{
     setMostrarTabela(!mostrarTabela)
+    setMostrarBotaoTabela(!mostrarBotaoTabela)
   }
   useEffect( () => {
     window.scrollTo(0, 0);
@@ -17,20 +19,20 @@ export default function Funcionario() {
     if( email===null && usuario===null){
       navegate("/")
     }
-  }, );
+  },[] );
 
   
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
-      <Button
-          onClick={handleMostrar}
-          mb={4}
-          backgroundColor={"#e8661e"}
-          color={"white"}
-        >
-          {mostrarTabela ? "Cadastrar funcionário" : "Mostrar tabela"}
-        </Button>
-      {mostrarTabela ?<TabelaFuncionario/>: <NovoFuncionario handleMostrar={handleMostrar} /> }
+      {mostrarBotaoVoltarEditar?<></>:<Button
+        onClick={handleMostrar}
+        mb={4}
+        backgroundColor={"#e8661e"}
+        color={"white"}
+      >
+        {mostrarBotaoTabela ? "Cadastrar funcionário" : "Voltar"}
+      </Button>}
+      {mostrarTabela ?<TabelaFuncionario handleMostrar={handleMostrar} mostrarTabela={mostrarTabela} setMostrarBotaoVoltarEditar={setMostrarBotaoVoltarEditar} mostrarBotaoVoltarEditar={mostrarBotaoVoltarEditar}/>: <NovoFuncionario handleMostrar={handleMostrar} /> }
       
     </Box>
   );

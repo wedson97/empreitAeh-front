@@ -36,15 +36,27 @@ export default function EditarAtividades({ atividade, setMostrarEditarAtividade,
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onEditarOpen(); // Abrir o modal de confirmação para edição
+    onEditarOpen();
   };
 
   const handleSubmitFinalizar = (e) => {
     e.preventDefault();
-    onFinalizarOpen(); // Abrir o modal de confirmação para finalização
+    onFinalizarOpen();
   };
 
   const handleFinalizar = async () => {
+    
+    if(atividade.finalizado===true){
+      toast({
+        title: "Erro",
+        description: "Atividade já está finalizada!",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      onFinalizarClose();
+      return null;
+    }
     try {
       const response = await api.put(
         `/empreiteiro/${empreiteiro.id}/obra/${atividade.obra.id}/atividade/${atividade.id}`,
@@ -74,6 +86,17 @@ export default function EditarAtividades({ atividade, setMostrarEditarAtividade,
   };
 
   const handleSubmitConfirmar = async () => {
+    if(atividade.finalizado===true){
+      toast({
+        title: "Erro",
+        description: "Atividade já está finalizada!",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      onEditarClose();
+      return null;
+    }
     try {
       const response = await api.put(
         `/empreiteiro/${empreiteiro.id}/obra/${atividade.obra.id}/atividade/${atividade.id}`,

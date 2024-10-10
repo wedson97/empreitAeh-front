@@ -42,7 +42,8 @@ function SignIn() {
     { bg: "whiteAlpha.200" }
   );
   const navigate = useNavigate();
-  const {setDonoObra, setEmpreiteiro} = useUser();
+  const {setDonoObra, setEmpreiteiro, editarPerfil, setEditarPerfil} = useUser();
+  
   useEffect(() => {
     const usuario = localStorage.getItem("usuario");
     const email = localStorage.getItem("email");
@@ -93,6 +94,18 @@ function SignIn() {
         navigate("/admin/default")
         localStorage.setItem("email",response.data.email)
         localStorage.setItem("usuario", response.data.nome)
+        if(response.data.tipo_usuario.id === 2 && response.data.endereco.cidade===null && response.data.endereco.bairro===null && response.data.endereco.rua===null){
+          // navigate("/admin/perfil")
+          // setEditarPerfil(true)
+          // toast({
+          //   title: "Completar cadastro",
+          //   description: `Para utilizar todas as funcionalidades do sistema, cadastre seu endereço atual!`,
+          //   status: "success",
+          //   duration: 6000,
+          //   isClosable: true,
+          //   });
+        }
+        
       }else{
         toast({
           title: "Falha no login",

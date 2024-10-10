@@ -110,10 +110,12 @@ export default function NovoFuncionario({handleMostrar}) {
                     />
                 </FormControl>
             </SimpleGrid>
-
+            <Box display="flex" justifyContent="flex-end" mt={4}>
             <Button backgroundColor="#e8661e" onClick={handleSubmit} color="white" mt={4}>
                 Enviar
             </Button>
+            </Box>
+            
         </Box>
     );
 }

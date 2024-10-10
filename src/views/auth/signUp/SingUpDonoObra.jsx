@@ -60,6 +60,8 @@ function SingUpDonoObra() {
   const toast = useToast();
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(formData);
+    
     try {
       const response = await api.post("/donos_obra", formData);
       if (response.status === 201) {

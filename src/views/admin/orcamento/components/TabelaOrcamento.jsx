@@ -12,7 +12,16 @@ import {
     TableCaption,
     TableContainer,
     IconButton,
-    Text
+    Text,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalBody,
+    ModalFooter,
+    Button,
+    useDisclosure,
+    useToast
   } from "@chakra-ui/react";
   import React, { useCallback, useEffect, useState} from "react";
   import { IoMdEye, IoMdClock} from "react-icons/io";
@@ -27,7 +36,51 @@ export default function TabelaOrcamento() {
   const [isPdfVisible, setPdfVisible] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const {empreiteiro, donoObra} = useUser();
+  const { isOpen: isConfirmar, onOpen: onConfirmarOpen, onClose: onConfirmarClose } = useDisclosure();
+  const { isOpen: isRejeitarModalOpen, onOpen: onRejeitarOpen, onClose: onRejeitarClose } = useDisclosure();
     const navigate = useNavigate();
+    const modalAprovarOrcamento = async (row) =>{
+      setSelectedRow(row)
+      onConfirmarOpen()
+    }
+    const modalReprovarOrcamento = async (row) =>{
+      setSelectedRow(row)
+      onRejeitarOpen()
+    }
+    const toast = useToast();
+    
+    const handleReprovarOrcamento = useCallback(async (row) => {
+      
+      let response;
+      try {
+        if (donoObra) {
+          response = await api.put(`/dono_obra/${row.dono_obra.id}/orcamento/${row.id}/reprovar`, {
+            data_aprovacao: new Date().toISOString()
+          });
+          if (response && response.status === 200) {
+            setOrcamentos((prevOrcamentos) =>
+              prevOrcamentos.map((orcamento) =>
+                orcamento.id === row.id
+                  ? { ...orcamento, data_aprovacao: new Date().toISOString() }
+                  : orcamento
+              )
+            );
+          }
+          toast({
+            title: "Orçamento cancelado",
+            description: "Orçamento cancelado com sucesso!",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+        }
+        onRejeitarClose()
+        
+      } catch (error) {
+        console.error("Erro ao aprovar o orçamento:", error);
+      }
+      
+    }, [empreiteiro, donoObra, setOrcamentos]);
     const handleAprovarOrcamento = useCallback(async (row) => {
       let response;
       try {
@@ -59,10 +112,11 @@ export default function TabelaOrcamento() {
           }
         }
         
-        
+        onConfirmarClose()
       } catch (error) {
         console.error("Erro ao aprovar o orçamento:", error);
       }
+      
     }, [empreiteiro, donoObra, setOrcamentos]);
   
     useEffect(() => {
@@ -95,17 +149,17 @@ export default function TabelaOrcamento() {
       fetchEmpreiteiro();
     }, [empreiteiro, donoObra, navigate, setOrcamentos]);
 
-    const handleDeleteOrcamento=async(row)=>{
-      const response = api.delete
-    }
     
     const getStatusIcon = (row) => {
-      if (row.data_aprovacao===null && row.data_compactuacao===null){
+      
+      if (row.data_aprovacao===null && row.data_compactuacao===null && row.status!=='Reprovado'){
         return { status: "Em Análise", icon: IoMdClock, color: "blue.600" }
-      }else if(row.data_aprovacao!==null && row.data_compactuacao===null){
+      }else if(row.data_aprovacao!==null && row.data_compactuacao===null && row.status!=='Reprovado'){
         return { status: "Esperando empreiteiro", icon: IoMdClock, color: "yellow.600"  }
-      } else if(row.data_compactuacao!==null && row.data_aprovacao===null){
+      } else if(row.data_compactuacao!==null && row.data_aprovacao===null && row.status!=='Reprovado'){
         return { status: "Esperando dono da obra",  icon: IoMdClock, color: "yellow.600" }
+      }else if(row.status==='Reprovado'){
+        return { status: "Reprovado",  icon: MdCancel, color: "red" }
       }else{
         return {status: "Finalizado", icon: MdCheckCircle, color: "green" };
       }
@@ -173,33 +227,34 @@ export default function TabelaOrcamento() {
                             color="white"
                             aria-label="Aprovar Orçamento"
                             icon={<MdCheckCircle />}
-                            onClick={() => handleAprovarOrcamento(row)}
+                            onClick={() => modalAprovarOrcamento(row)}
                             mr={1}
                           />
                           <IconButton
                             backgroundColor="#c51010"
                             color="white"
                             aria-label="Cancelar"
+                            onClick={() => modalReprovarOrcamento(row)}
                             icon={<MdCancel />}
                           />
                         </>
                       )}
 
-                      {/* Condição para exibir o botão para o empreiteiro (se não tiver data de compactuação) */}
-                      {empreiteiro && !row.data_compactuacao && (
+                      {empreiteiro && !row.data_compactuacao && row.status!=='Reprovado' &&(
                         <>
                           <IconButton
                             backgroundColor="green"
                             color="white"
                             aria-label="Compactuar Orçamento"
                             icon={<MdCheckCircle />}
-                            onClick={() => handleAprovarOrcamento(row)}
+                            onClick={() => modalAprovarOrcamento(row)}
                             mr={1}
                           />
                           <IconButton
                             backgroundColor="#c51010"
                             color="white"
                             aria-label="Cancelar"
+                            // onClick={() => modalReprovarOrcamento(row)}
                             icon={<MdCancel />}
                           />
                         </>
@@ -212,6 +267,69 @@ export default function TabelaOrcamento() {
           </Table>
         </TableContainer>
         {isPdfVisible && <PdfOrcamento row={selectedRow} setPdfVisible={setPdfVisible} />}
+        <Modal isOpen={isConfirmar} onClose={onConfirmarClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Confirmar orçamento</ModalHeader>
+          <ModalBody>
+            Você tem certeza que deseja confirmar esse orçamento?
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="gray" mr={3} onClick={onConfirmarClose}>
+              Cancelar
+            </Button>
+            <Button 
+              backgroundColor="#e8661e" 
+              color="white" 
+              _hover={{ backgroundColor: "#d45a1a" }} 
+              onClick={()=>{handleAprovarOrcamento(selectedRow)}}
+            >Confirmar
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+      <Modal isOpen={isRejeitarModalOpen} onClose={onRejeitarClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Cancelar orçamento</ModalHeader>
+          <ModalBody>
+            Você tem certeza que deseja cancelar esse orçamento?
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="gray" mr={3} onClick={onRejeitarClose}>
+              Cancelar
+            </Button>
+            <Button 
+              backgroundColor="#e8661e" 
+              color="white" 
+              _hover={{ backgroundColor: "#d45a1a" }} 
+              onClick={()=>{handleReprovarOrcamento(selectedRow)}}
+            >Confirmar
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+      <Modal >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Finalizar Atividade</ModalHeader>
+          <ModalBody>
+            Você tem certeza que deseja finalizar esta atividade?
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="gray" mr={3} >
+              Cancelar
+            </Button>
+            <Button 
+              backgroundColor="#e8661e" 
+              color="white" 
+              _hover={{ backgroundColor: "#d45a1a" }} 
+            >
+              Finalizar
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
         </SimpleGrid>
         
     );

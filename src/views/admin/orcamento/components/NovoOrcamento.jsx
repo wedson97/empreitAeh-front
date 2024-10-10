@@ -2,10 +2,7 @@ import React, { useState } from "react";
 import { Box, Button, FormControl, FormLabel, Input, Textarea, SimpleGrid, useToast } from "@chakra-ui/react";
 import InputMask from 'react-input-mask';
 import api from "api/requisicoes";
-import { useUser } from "context/UseContext";
-
 export default function NovoOrcamento({setShowTabela}) {
-  const {alertaOrcamento, setAlertaOrcamento} = useUser();
   const [formData, setFormData] = useState({
     cpf_cliente: "",
     descricao: "",
@@ -100,12 +97,12 @@ export default function NovoOrcamento({setShowTabela}) {
 
       } catch (error) {
           console.error(error);
-          setAlertaOrcamento({
-              status: "error",
-              titulo: "Erro",
-              descricao: "Houve um erro ao processar a solicitação.",
-              duracao: 3000,
-              visivel: true,
+          toast({
+              title: "Erro",
+            description: "Houve um erro ao processar a solicitação.",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
           });
       }
   };

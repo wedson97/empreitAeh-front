@@ -6,6 +6,8 @@ import avatar from "assets/img/avatars/avatar4.png";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import EditarPerfil from "./components/EditarPerfil";
+import { useUser } from "context/UseContext";
+import CadastroEndereco from "./components/CadastrarEndereco";
 
 export default function Overview() {
   const [editarPerfil, setEditarPerfil] = useState(false);
@@ -37,6 +39,7 @@ export default function Overview() {
       </Button>
       {editarPerfil ? (
         <EditarPerfil handleToggleEditarPerfil={handleToggleEditarPerfil}/>
+        // <CadastroEndereco/>
       ) : (
         <Grid
           templateColumns={{

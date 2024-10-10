@@ -17,7 +17,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { IoMdEye, IoMdClock } from "react-icons/io";
-import { MdBuild, MdCheckCircle } from "react-icons/md";
+import { MdBuild, MdCancel, MdCheckCircle } from "react-icons/md";
 import api from "api/requisicoes";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "context/UseContext";
@@ -41,6 +41,7 @@ export default function TabelaObras({ handleGerenciar}) {
         }
         if(response){
           setObras(response.data);
+          
         }
       } catch (error) {
         console.error("Erro ao buscar os empreiteiros ou orçamentos:", error);
@@ -70,15 +71,27 @@ export default function TabelaObras({ handleGerenciar}) {
   
   const getStatusIcon = (row) => {
     const atividadesNaoFinalizadas = atividadesPorObra[row.id] || [];
-    
-    if (row.orcamento.data_aprovacao === null || row.orcamento.data_compactuacao === null) {
+    if (
+      row.orcamento.status !== 'Reprovado' &&
+      (row.orcamento.data_aprovacao === null || row.orcamento.data_compactuacao === null)
+    ) {
       return { status: "Esperando aprovação", icon: IoMdClock, color: "yellow.600" };
-    } else if (row.orcamento.data_aprovacao !== null && row.orcamento.data_compactuacao !== null && atividadesNaoFinalizadas.length > 0) {
+    } 
+    else if (
+      row.orcamento.status !== 'Reprovado' &&
+      row.orcamento.data_aprovacao !== null &&
+      row.orcamento.data_compactuacao !== null
+    ) {
       return { status: "Em Andamento", icon: IoMdClock, color: "blue.600" };
-    } else {
+    } 
+    else if (row.orcamento.status === 'Reprovado') {
+      return { status: "Reprovado", icon: MdCancel, color: "red" };
+    } 
+    else {
       return { status: "Finalizado", icon: MdCheckCircle, color: "green" };
     }
   };
+  
   // if (row.data_aprovacao===null && row.data_compactuacao===null){
   //   return { status: "Em Análise", icon: IoMdClock, color: "blue.600" }
   // }else if(row.data_aprovacao!==null && row.data_compactuacao===null){
