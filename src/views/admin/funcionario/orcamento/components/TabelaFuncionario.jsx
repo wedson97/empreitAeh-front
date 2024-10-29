@@ -61,10 +61,8 @@ export default function TabelaFuncionario({handleMostrar, mostrarTabela, setMost
   
   const handleConfirmarExclusao = async () => {
     try {
-      const response = await api.delete(`/empreiteiro/${empreiteiro.id}/funcionarios/${funcionarioSelecionado.id}`);
-      console.log("Status de exclusão:", response.status); // Adicionar log do status
+      const response = await api.delete(`/empreiteiro/${empreiteiro.id}/funcionario/${funcionarioSelecionado.id}`);
   
-      // Verificar se o status está na faixa de 200 (200-299)
       if (response.status >= 200 && response.status < 300) {
         setFuncionarios(funcionarios.filter(f => f.id !== funcionarioSelecionado.id));
         toast({

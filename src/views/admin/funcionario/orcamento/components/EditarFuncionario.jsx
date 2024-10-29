@@ -19,9 +19,10 @@ export default function EditarFuncionario({setMostrarEditar, funcionarioSelecion
       };
     const handleConfirmarEdicao = async (e) => {
         e.preventDefault();
-
+        console.log(formDataFuncionario);
+        
         try {
-            const response = await api.put(`/empreiteiro/${empreiteiro.id}/funcionarios/${funcionarioSelecionado.id}`, formDataFuncionario);
+            const response = await api.put(`/empreiteiro/${empreiteiro.id}/funcionario/${funcionarioSelecionado.id}`, formDataFuncionario);
             if (response.status===200){
                 toast({
                     title: "Edição de funcionario!",

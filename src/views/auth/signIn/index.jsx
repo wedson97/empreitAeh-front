@@ -92,6 +92,7 @@ function SignIn() {
         
         setFormData({email: '',senha: ''})
         navigate("/admin/default")
+        localStorage.setItem("id",response.data.id)
         localStorage.setItem("email",response.data.email)
         localStorage.setItem("usuario", response.data.nome)
         if(response.data.tipo_usuario.id === 2 && response.data.endereco.cidade===null && response.data.endereco.bairro===null && response.data.endereco.rua===null){

@@ -7,7 +7,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import EditarPerfil from "./components/EditarPerfil";
 import { useUser } from "context/UseContext";
-import CadastroEndereco from "./components/CadastrarEndereco";
+import CadastroEndereco from "../default/components/CadastrarEndereco";
 
 export default function Overview() {
   const [editarPerfil, setEditarPerfil] = useState(false);

@@ -1,10 +1,10 @@
 import { Box, Button, FormControl, FormLabel, Input, SimpleGrid, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, useDisclosure, useToast, Heading } from "@chakra-ui/react";
 import api from "api/requisicoes";
 import { useUser } from "context/UseContext";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function CadastroEndereco() {
-    const {donoObra, setDonoObra} = useUser()
+  const {donoObra, setDonoObra} = useUser()
   const [formData, setFormData] = useState({
     cep: "",
     cidade: "",
@@ -12,7 +12,17 @@ export default function CadastroEndereco() {
     rua: "",
     numero: ""
   });
+  useEffect(() => {
+    toast({
+      title: "Complete seu cadastro",
+      description: "Cadastre seu endereço atual",
+      status: "success",
+      duration: 4000,
+      isClosable: true,
+    });
+  }, []);
   const toast = useToast();
+  
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleInputChange = (e) => {

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Box, Button, FormControl, FormLabel, Input, SimpleGrid, useToast } from "@chakra-ui/react";
+import InputMask from 'react-input-mask';
 import { useUser } from "context/UseContext";
 import api from "api/requisicoes";
 
@@ -17,40 +18,30 @@ export default function NovoFuncionario({handleMostrar}) {
 
         try {
             const response = await api.post(`/empreiteiro/${empreiteiro.id}/funcionarios`, formDataFuncionario);
-            if (response.status===200){
+            if (response.status === 200) {
                 toast({
                     title: "Funcionário cadastrado!",
                     description: `Funcionário ${formDataFuncionario.nome} cadastrado com sucesso!`,
                     status: "success",
                     duration: 3000,
                     isClosable: true,
-                    });
+                });
                
                 setFormDataFuncionario({
                     nome: "",
                     cpf: "",
                     data_nascimento: ""
                 });
-                handleMostrar()
+                handleMostrar();
             }
         } catch (error) {
-            setAlertaFuncionario({
+            toast({
+                title: "Cadastro falhou!",
+                description: `Erro ao criar funcionário, verifique os dados e tente novamente`,
                 status: "error",
-                titulo: "Cadastro falhou!",
-                descricao: `Erro ao criar funcionário, verifique os dados e tente novamente`,
-                duracao: 3000,
-                visivel: true,
+                duration: 3000,
+                isClosable: true,
             });
-            
-            setFormDataFuncionario({
-                nome: "",
-                cpf: "",
-                data_nascimento: ""
-            });
-    
-            setTimeout(() => {
-                setAlertaFuncionario(prev => ({ ...prev, visivel: false }));
-            }, 5000);
         }
     };
 
@@ -59,6 +50,14 @@ export default function NovoFuncionario({handleMostrar}) {
         setFormDataFuncionario((prevData) => ({
             ...prevData,
             [name]: value,
+        }));
+    };
+
+    const handleCpfChange = (e) => {
+        const valorSemMascara = e.target.value.replace(/\D/g, '');
+        setFormDataFuncionario((prevData) => ({
+            ...prevData,
+            cpf: valorSemMascara,
         }));
     };
 
@@ -81,22 +80,30 @@ export default function NovoFuncionario({handleMostrar}) {
                         onChange={handleInputChange}
                     />
                 </FormControl>
+
                 <FormControl id="cpf">
                     <FormLabel>CPF do funcionário</FormLabel>
-                    <Input
-                        isRequired
-                        variant='auth'
-                        name="cpf"
-                        type='text'
-                        placeholder='xxx.xxx.xxx-xx'
-                        fontSize='sm'
-                        ms={{ base: "0px", md: "0px" }}
-                        mb='24px'
-                        fontWeight='500'
-                        size='md'
+                    <InputMask
+                        mask="999.999.999-99"
                         value={formDataFuncionario.cpf}
-                        onChange={handleInputChange}
-                    />
+                        onChange={handleCpfChange}
+                    >
+                        {(inputProps) => (
+                            <Input
+                                {...inputProps}
+                                isRequired
+                                variant="auth"
+                                name="cpf"
+                                type="text"
+                                placeholder="xxx.xxx.xxx-xx"
+                                fontSize="sm"
+                                ms={{ base: "0px", md: "0px" }}
+                                mb="24px"
+                                fontWeight="500"
+                                size="md"
+                            />
+                        )}
+                    </InputMask>
                 </FormControl>
 
                 <FormControl id="data_nascimento">
@@ -105,17 +112,16 @@ export default function NovoFuncionario({handleMostrar}) {
                         isRequired
                         type="date"
                         name="data_nascimento"
-                        value={formDataFuncionario.data_nascimento} // Correção do valor
-                        onChange={handleInputChange} // Adicionado onChange
+                        value={formDataFuncionario.data_nascimento}
+                        onChange={handleInputChange}
                     />
                 </FormControl>
             </SimpleGrid>
             <Box display="flex" justifyContent="flex-end" mt={4}>
-            <Button backgroundColor="#e8661e" onClick={handleSubmit} color="white" mt={4}>
-                Enviar
-            </Button>
+                <Button backgroundColor="#e8661e" onClick={handleSubmit} color="white" mt={4}>
+                    Enviar
+                </Button>
             </Box>
-            
         </Box>
     );
 }

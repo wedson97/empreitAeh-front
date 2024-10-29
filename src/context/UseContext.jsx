@@ -15,10 +15,16 @@ export const UserProvider = ({ children }) => {
   const [donoObra, setDonoObra] = useState(null);
   // FUNCIONARIOS
   const [funcionarios, setFuncionarios] = useState([]);
+  // ACCESS_TOKEN
+  const [accessToken, setAccessToken] = useState('APP_USR-3911354165422158-101610-aaf89ff52bdf9345a484843225ba4ea7-1929055828');
+  //  PAGAMENTOS
+  const [pagamentos, setPagamentos] = useState([]);
+  
 
   const toast = useToast();
   useEffect(() => {
     const performLogin = async () => {
+      const id = localStorage.getItem('id');
       const email = localStorage.getItem('email');
       const usuario = localStorage.getItem('usuario');
       const tipo_usuario = localStorage.getItem('userType');
@@ -26,24 +32,11 @@ export const UserProvider = ({ children }) => {
       if (email && usuario) {
         try {
           if (tipo_usuario === "empreiteiro") {
-            const response = await api.get("/empreiteiros");
+            const response = await api.get("/empreiteiro/"+id);
             if (response.status === 200) {
-              const filteredEmpreiteiros = response.data.filter(empreiteiro => 
-                empreiteiro.nome === usuario && empreiteiro.email === email
-              );
-          
-              if (filteredEmpreiteiros.length > 0) {
-                setEmpreiteiro(filteredEmpreiteiros[0]);
-                localStorage.setItem("userType", "empreiteiro");
-              } else {
-                toast({
-                  title: "Empreiteiro não encontrado",
-                  description: "Verifique suas credenciais!",
-                  status: "error",
-                  duration: 3000,
-                  isClosable: true,
-                });
-              }
+              setEmpreiteiro(response.data);
+              localStorage.setItem("userType", "empreiteiro");
+             
             } else {
               toast({
                 title: "Falha no login",
@@ -54,24 +47,11 @@ export const UserProvider = ({ children }) => {
               });
             }
           } else if (tipo_usuario === "dono_obra") {
-            const response = await api.get("/donos_obra");
+            const response = await api.get("/dono_obra/"+id);
             if (response.status === 200) {
-              const filteredDonoObra = response.data.filter(donoObra => 
-                donoObra.nome === usuario && donoObra.email === email
-              );
-          
-              if (filteredDonoObra.length > 0) {
-                setDonoObra(filteredDonoObra[0]);
-                localStorage.setItem("userType", "dono_obra");
-              } else {
-                toast({
-                  title: "Dono de obra não encontrado",
-                  description: "Verifique suas credenciais!",
-                  status: "error",
-                  duration: 3000,
-                  isClosable: true,
-                });
-              }
+              setDonoObra(response.data);
+              localStorage.setItem("userType", "dono_obra");
+             
             } else {
               toast({
                 title: "Falha no login",
@@ -99,7 +79,7 @@ export const UserProvider = ({ children }) => {
     performLogin();
   }, []);
   return (
-    <UserContext.Provider value={{orcamentos, setOrcamentos, obras, setObras,empreiteiro, setEmpreiteiro, donoObra, setDonoObra, funcionarios, setFuncionarios }}>
+    <UserContext.Provider value={{pagamentos, setPagamentos, accessToken, setAccessToken,orcamentos, setOrcamentos, obras, setObras,empreiteiro, setEmpreiteiro, donoObra, setDonoObra, funcionarios, setFuncionarios }}>
       {children}
     </UserContext.Provider>
   );

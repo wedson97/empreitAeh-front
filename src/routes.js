@@ -16,6 +16,7 @@ import Profile from 'views/admin/profile';
 import Orcamento from 'views/admin/orcamento';
 import Obra from 'views/admin/obra';
 import Funcionario from 'views/admin/funcionario/orcamento';
+import Pagamentos from 'views/admin/financeiro';
 
 
 // Auth Imports
@@ -87,7 +88,13 @@ const routes = [
     path: '/funcionario',
     icon: <Icon as={MdEngineering} width="20px" height="20px" color="inherit" />,
     component: <Funcionario />,
-  }
+  },{
+    name: 'Pagamentos',
+    layout: '/admin',
+    path: '/pagamentos',
+    icon: <Icon as={MdMonetizationOn} width="20px" height="20px" color="inherit" />,
+    component: <Pagamentos />,
+  },
   // {
   //   name: 'RTL Admin',
   //   layout: '/rtl',

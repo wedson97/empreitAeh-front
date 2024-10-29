@@ -61,7 +61,7 @@ export default function TabelaOrcamento() {
             setOrcamentos((prevOrcamentos) =>
               prevOrcamentos.map((orcamento) =>
                 orcamento.id === row.id
-                  ? { ...orcamento, data_aprovacao: new Date().toISOString() }
+                  ? { ...orcamento, data_aprovacao: new Date().toISOString(), status: "Reprovado" }
                   : orcamento
               )
             );
@@ -212,54 +212,55 @@ export default function TabelaOrcamento() {
                       </Flex>
                     </Td>
                     <Td>
-                      <IconButton
-                        backgroundColor="#e8661e"
-                        color="white"
-                        aria-label="Visualizar"
-                        icon={<IoMdEye />}
-                        onClick={() => handleViewPdf(row)}
-                        mr={1}
-                      />
-                       {donoObra && !row.data_aprovacao && (
-                        <>
-                          <IconButton
-                            backgroundColor="green"
-                            color="white"
-                            aria-label="Aprovar Orçamento"
-                            icon={<MdCheckCircle />}
-                            onClick={() => modalAprovarOrcamento(row)}
-                            mr={1}
-                          />
-                          <IconButton
-                            backgroundColor="#c51010"
-                            color="white"
-                            aria-label="Cancelar"
-                            onClick={() => modalReprovarOrcamento(row)}
-                            icon={<MdCancel />}
-                          />
-                        </>
-                      )}
+                    <IconButton
+                      backgroundColor="#e8661e"
+                      color="white"
+                      aria-label="Visualizar"
+                      icon={<IoMdEye />}
+                      onClick={() => handleViewPdf(row)}
+                      mr={1}
+                    />
+                    
+                    {donoObra && !row.data_aprovacao && row.status !== 'Reprovado' && (
+                      <>
+                        <IconButton
+                          backgroundColor="green"
+                          color="white"
+                          aria-label="Aprovar Orçamento"
+                          icon={<MdCheckCircle />}
+                          onClick={() => modalAprovarOrcamento(row)}
+                          mr={1}
+                        />
+                        <IconButton
+                          backgroundColor="#c51010"
+                          color="white"
+                          aria-label="Cancelar"
+                          onClick={() => modalReprovarOrcamento(row)}
+                          icon={<MdCancel />}
+                        />
+                      </>
+                    )}
 
-                      {empreiteiro && !row.data_compactuacao && row.status!=='Reprovado' &&(
-                        <>
-                          <IconButton
-                            backgroundColor="green"
-                            color="white"
-                            aria-label="Compactuar Orçamento"
-                            icon={<MdCheckCircle />}
-                            onClick={() => modalAprovarOrcamento(row)}
-                            mr={1}
-                          />
-                          <IconButton
-                            backgroundColor="#c51010"
-                            color="white"
-                            aria-label="Cancelar"
-                            // onClick={() => modalReprovarOrcamento(row)}
-                            icon={<MdCancel />}
-                          />
-                        </>
-                      )}
-                    </Td>
+                    {empreiteiro && !row.data_compactuacao && row.status !== 'Reprovado' && (
+                      <>
+                        <IconButton
+                          backgroundColor="green"
+                          color="white"
+                          aria-label="Compactuar Orçamento"
+                          icon={<MdCheckCircle />}
+                          onClick={() => modalAprovarOrcamento(row)}
+                          mr={1}
+                        />
+                        <IconButton
+                          backgroundColor="#c51010"
+                          color="white"
+                          aria-label="Cancelar"
+                          icon={<MdCancel />}
+                        />
+                      </>
+                    )}
+                  </Td>
+
                   </Tr>
                 );
               })}
