@@ -26,6 +26,7 @@ import { RiEyeCloseLine } from "react-icons/ri";
 import { useNavigate } from 'react-router-dom';
 import api from "api/requisicoes";
 import { useUser } from "context/UseContext";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 function SignIn() {
   const textColor = useColorModeValue("navy.700", "white");
@@ -60,7 +61,7 @@ function SignIn() {
  
   const [formData, setFormData] = useState({
     email: '',
-    senha: ''
+    senha: ' '
   });
 
   const handleInputChange = (e) => {
@@ -72,14 +73,15 @@ function SignIn() {
   };
   const toast = useToast();
  
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleSubmit = async (user) => {
     const data = new FormData();
     data.append('email', formData.email);
     data.append('senha', formData.senha);
+    console.log(formData);
+    
     try {
-      const response = await api.post("/login",formData)
+
+      const response = await api.post("/login",{email:user.email, senha:" "})
       if(response.status===200){
         
         if (response.data.tipo_usuario.id === 3) {
@@ -126,7 +128,25 @@ function SignIn() {
         });
     }
   }
-
+const handleGoogleSignUp = async () => {
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      
+      handleSubmit(user)
+    } catch (error) {
+      toast({
+        title: "Erro ao entrar com Google!",
+        description: `Ocorreu um erro: ${error.message}`,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+    }
+  };
 
   return (
     <DefaultAuth illustrationBackground={illustration} image={illustration}>
@@ -178,7 +198,8 @@ function SignIn() {
             fontWeight='500'
             _hover={googleHover}
             _active={googleActive}
-            _focus={googleActive}>
+            _focus={googleActive}
+            onClick={handleGoogleSignUp}>
             <Icon as={FcGoogle} w='20px' h='20px' me='10px' />
             Entrar com o Google
           </Button>

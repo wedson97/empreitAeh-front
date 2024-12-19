@@ -9,6 +9,7 @@ import {
 import initialTheme from './theme/theme';
 import { useState } from 'react';
 import { UserProvider } from 'context/UseContext';
+import Principal from 'views/auth/Principal/Index';
 
 export default function Main() {
   const [currentTheme, setCurrentTheme] = useState(initialTheme);
@@ -29,7 +30,8 @@ export default function Main() {
             <RTLLayout theme={currentTheme} setTheme={setCurrentTheme} />
           }
         />
-        <Route path="/" element={<Navigate to="/auth/principal" replace />} />
+        {/* <Route path="/" element={<Navigate to="/" replace />} /> */}
+        <Route path="/" element={<Principal/>} />
       </Routes>
       </UserProvider>
     </ChakraProvider>

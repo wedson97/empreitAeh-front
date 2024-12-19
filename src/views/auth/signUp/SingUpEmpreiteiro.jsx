@@ -1,6 +1,7 @@
 
 import React, {useState, useEffect} from "react";
 import InputMask from 'react-input-mask';
+import { FcGoogle } from "react-icons/fc";
 // Chakra imports
 import {
   Box,
@@ -17,6 +18,9 @@ import {
   useColorModeValue,
   useToast,
 } from "@chakra-ui/react";
+
+import { auth } from '../../../firebase/firebaseConfig';
+import { getAuth, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail   } from 'firebase/auth';
 // Custom components
 import DefaultAuth from "layouts/auth/Default";
 // Assets
@@ -34,13 +38,18 @@ function SignUpEmpreiteiro() {
   const textColorSecondary = "gray.400";
   const brandStars = useColorModeValue("brand.500", "brand.400");
   const [show, setShow] = React.useState(false);
+
+
+    const [loading, setLoading] = useState(false);
+    const [step, setStep] = useState(1); // Step para controle de navegação
+  
   const handleClick = () => setShow(!show);
   const [formData, setFormData] = useState({
     nome: '',
     cpf: '',
     cnpj: null,
     email: '',
-    senha: '',
+    senha: ' ',
     tipo_usuario: 3
   });
  const handleInputChange = (e) => {
@@ -81,7 +90,7 @@ function SignUpEmpreiteiro() {
         duration: 3000,
         isClosable: true,
         });
-      
+       await sendPasswordResetEmail(auth, formData.email);
       navigate("/auth/sign-in")
     } catch (error) {
       toast({
@@ -94,9 +103,34 @@ function SignUpEmpreiteiro() {
     }
   }
 
+  const handleGoogleSignUp = async () => {
+      setLoading(true);
+      const auth = getAuth();
+      const provider = new GoogleAuthProvider();
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        setFormData({
+          ...formData,
+          email: user.email,
+          nome: user.displayName,
+        });
+        setStep(2); // Passa para a etapa de CPF/CNPJ
+      } catch (error) {
+        toast({
+          title: "Erro ao cadastrar com Google!",
+          description: `Ocorreu um erro: ${error.message}`,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
   return (
     <DefaultAuth illustrationBackground={illustration} image={illustration}>
-    
       <Flex
         maxW={{ base: "100%", md: "max-content" }}
         w='100%'
@@ -107,11 +141,10 @@ function SignUpEmpreiteiro() {
         justifyContent='center'
         mb={{ base: "30px", md: "60px" }}
         px={{ base: "25px", md: "0px" }}
-        
         flexDirection='column'>
         <Box me='auto'>
           <Heading color={textColor} fontSize='36px' mb='10px'>
-            Cadastrar empreiteiro
+            Cadastrar Empreiteiro
           </Heading>
         </Box>
         <Flex
@@ -124,168 +157,73 @@ function SignUpEmpreiteiro() {
           mx={{ base: "auto", lg: "unset" }}
           me='auto'
           mb={{ base: "20px", md: "auto" }}>
-          <form onSubmit={handleSubmit}>
-          <FormControl>
-          <FormLabel
-              display='flex'
-              ms='4px'
-              fontSize='sm'
-              fontWeight='500'
-              color={textColor}
-              mb='8px'>
-              Nome<Text color={brandStars}>*</Text>
-            </FormLabel>
-            <Input
-              isRequired={true}
-              variant='auth'
-              fontSize='sm'
-              ms={{ base: "0px", md: "0px" }}
-              type='text'
-              name="nome"
-              placeholder='Nome'
-              value={formData.nome}
-              onChange={handleInputChange}
-              mb='24px'
-              fontWeight='500'
-              size='lg'
-            />
-            <FormLabel
-              display='flex'
-              ms='4px'
-              fontSize='sm'
-              fontWeight='500'
-              color={textColor}
-              mb='8px'>
-              CPF<Text color={brandStars}>*</Text>
-            </FormLabel>
-            <InputMask
-              mask="999.999.999-99"
-              value={formData.cpf}
-              onChange={handleInputChange}
-              maskChar={null} // Isso remove o caractere de máscara visível
-            >
-              {() => (
-                <Input
-                  isRequired={true}
-                  variant='auth'
+          
+          {/* Etapa de Google Sign Up */}
+          {step === 1 && (
+            <form>
+              <FormControl>
+                <Button
+                  fontSize='sm'
+                  variant='brand'
+                  fontWeight='500'
+                  backgroundColor={'white'}
+                  w='100%'
+                  h='50'
+                  mb='24px'
+                  isLoading={loading}
+                  onClick={handleGoogleSignUp}
+                >
+                  <Icon as={FcGoogle} w='20px' h='20px' me='10px' />
+                  <p style={{color:"black"}}> Cadastrar com Google</p>
+                 
+                </Button>
+              </FormControl>
+            </form>
+          )}
+
+          {/* Etapa de CPF e CNPJ */}
+          {step === 2 && (
+            <form onSubmit={handleSubmit}>
+              <FormControl>
+                <FormLabel>CPF</FormLabel>
+                <InputMask
+                  mask="999.999.999-99"
+                  value={formData.cpf}
+                  onChange={handleInputChange}
                   name="cpf"
-                  fontSize='sm'
-                  ms={{ base: "0px", md: "0px" }}
-                  type='text'
-                  placeholder='xxx.xxx.xxx-xx'
-                  mb='24px'
-                  fontWeight='500'
-                  size='lg'
-                />
-              )}
-            </InputMask>
-            <FormLabel
-              display='flex'
-              ms='4px'
-              fontSize='sm'
-              fontWeight='500'
-              color={textColor}
-              
-              mb='8px'
-            >
-            
-            CNPJ 
-            <FormLabel display='flex'
-              ms='4px'
-              fontSize='sm'
-              fontWeight='500'
-              color={textColor}
-              opacity={0.6}
-              >(Opcional)
-            </FormLabel>
-          </FormLabel>
-          <InputMask
-              mask="99.999.999/9999-99"
-              value={formData.cnpj}
-              onChange={handleInputChange}
-              maskChar={null} // Isso remove o caractere de máscara visível
-            >
-              {() => (
-                <Input
-                  variant='auth'
+                  maskChar={null}
+                  required
+                >
+                  {(inputProps) => <Input {...inputProps} />}
+                </InputMask>
+              </FormControl>
+              <FormControl mt={4}>
+                <FormLabel>CNPJ (opcional)</FormLabel>
+                <InputMask
+                  mask="99.999.999/9999-99"
+                  value={formData.cnpj}
+                  onChange={handleInputChange}
                   name="cnpj"
-                  fontSize='sm'
-                  ms={{ base: "0px", md: "0px" }}
-                  type='text'
-                  placeholder='xx.xxx.xxx/xxxx-xx'
-                  mb='24px'
-                  fontWeight='500'
-                  size='lg'
-                />
-              )}
-            </InputMask>
-            <FormLabel
-              display='flex'
-              ms='4px'
-              fontSize='sm'
-              fontWeight='500'
-              color={textColor}
-              mb='8px'>
-              Email<Text color={brandStars}>*</Text>
-            </FormLabel>
-            <Input
-              isRequired={true}
-              variant='auth'
-              value={formData.email}
-              name="email"
-              onChange={handleInputChange}
-              fontSize='sm'
-              ms={{ base: "0px", md: "0px" }}
-              type='email'
-              placeholder='mail@mail.com'
-              mb='24px'
-              fontWeight='500'
-              size='lg'
-            />
-            <FormLabel
-              ms='4px'
-              fontSize='sm'
-              fontWeight='500'
-              color={textColor}
-              display='flex'>
-              Senha<Text color={brandStars}>*</Text>
-            </FormLabel>
-            
-            <InputGroup size='md'>
-              <Input
-                isRequired={true}
+                  maskChar={null}
+                >
+                  {(inputProps) => <Input {...inputProps} />}
+                </InputMask>
+              </FormControl>
+              <Button
+                mt={6}
                 fontSize='sm'
-                value={formData.senha}
-                name="senha"
-                onChange={handleInputChange}
-                placeholder='Min. 8 caracteres'
-                mb='24px'
-                size='lg'
-                type={show ? "text" : "password"}
-                variant='auth'
-              />
-              <InputRightElement display='flex' alignItems='center' mt='4px'>
-                <Icon
-                  color={textColorSecondary}
-                  _hover={{ cursor: "pointer" }}
-                  as={show ? RiEyeCloseLine : MdOutlineRemoveRedEye}
-                  onClick={handleClick}
-                />
-              </InputRightElement>
-            </InputGroup>
-            <Button
-              fontSize='sm'
-              variant='brand'
-              fontWeight='500'
-              backgroundColor={'#e8661e'}
-              w='100%'
-              h='50'
-              mb='24px'
-              type="submit">
-              Cadastrar
-            </Button>
-          </FormControl>
-          </form>
+                variant='brand'
+                fontWeight='500'
+                backgroundColor={'white'}
+                w='100%'
+                h='50'
+                type="submit"
+              >
+                Finalizar Cadastro
+              </Button>
+            </form>
+          )}
+
         </Flex>
       </Flex>
     </DefaultAuth>

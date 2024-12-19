@@ -293,7 +293,7 @@ export default function HeaderLinks(props) {
               borderRadius="8px"
               px="14px"
             >
-             <Text fontSize="sm" as={Link} to="/auth/principal" onClick={handleClick}>
+             <Text fontSize="sm" as={Link} to="/" onClick={handleClick}>
               Log out
             </Text>
             </MenuItem>
