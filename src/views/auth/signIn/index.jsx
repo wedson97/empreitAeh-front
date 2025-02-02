@@ -77,7 +77,6 @@ function SignIn() {
     const data = new FormData();
     data.append('email', formData.email);
     data.append('senha', formData.senha);
-    console.log(formData);
     
     try {
 
@@ -130,6 +129,8 @@ function SignIn() {
   }
 const handleGoogleSignUp = async () => {
     const auth = getAuth();
+    console.log(auth);
+    
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);

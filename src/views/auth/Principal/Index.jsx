@@ -21,8 +21,6 @@ function Principal() {
   const textColor = useColorModeValue("white");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
-  console.log("aq");
-  
   useEffect(() => {
     const usuario = localStorage.getItem("usuario");
     const email = localStorage.getItem("email");
