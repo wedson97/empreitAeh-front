@@ -8,6 +8,7 @@ export default function NovoFuncionario({handleMostrar}) {
     const { empreiteiro, setAlertaFuncionario } = useUser();
     const [formDataFuncionario, setFormDataFuncionario] = useState({
         nome: "",
+        telefone:"",
         cpf: "",
         data_nascimento: ""
     });
@@ -15,9 +16,16 @@ export default function NovoFuncionario({handleMostrar}) {
     
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        console.log(formDataFuncionario);
+        const token = localStorage.getItem("token"); 
+            
         try {
-            const response = await api.post(`/empreiteiro/${empreiteiro.id}/funcionarios`, formDataFuncionario);
+            const response = await api.post(`/funcionarios`, formDataFuncionario,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
             if (response.status === 200) {
                 toast({
                     title: "Funcionário cadastrado!",
@@ -77,6 +85,16 @@ export default function NovoFuncionario({handleMostrar}) {
                         isRequired
                         name="nome"
                         value={formDataFuncionario.nome}
+                        onChange={handleInputChange}
+                    />
+                </FormControl>
+                <FormControl id="telefone">
+                    <FormLabel>Telefone</FormLabel>
+                    <Input
+                        isRequired
+                        name="telefone"
+                        type="number"
+                        value={formDataFuncionario.telefone}
                         onChange={handleInputChange}
                     />
                 </FormControl>

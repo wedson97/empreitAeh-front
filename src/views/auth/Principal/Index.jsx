@@ -16,16 +16,19 @@ import { Stack, useDisclosure } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import logo from "./img/logo.png"
 import background from "./img/empreitaeh.png"
+import { getAuth } from "firebase/auth";
 
 function Principal() {
   const textColor = useColorModeValue("white");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
   useEffect(() => {
-    const usuario = localStorage.getItem("usuario");
-    const email = localStorage.getItem("email");
-
-    if (usuario !== null && email !== null) {
+    const id = localStorage.getItem("id");
+    const tipo_usuario = localStorage.getItem("tipo_usuario");
+    const nome = localStorage.getItem("nome");
+    
+    
+    if (nome !== null && tipo_usuario !== null && id !== null) {
       navigate("/admin/default");
     }
 

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button } from "@chakra-ui/react";
-import NovoFuncionario from "./components/NovoFuncionario";
+import NovoFuncionario from "./components/NovoFornecedor";
 import { useNavigate } from "react-router-dom";
-import TabelaFuncionario from "./components/TabelaFuncionario";
-export default function Funcionario() {
+import TabelaFornecedor from "./components/TabelaFornecedor";
+import NovoFornecedor from "./components/NovoFornecedor";
+
+export default function Fornecedor() {
   const navegate = useNavigate();
   const [mostrarTabela, setMostrarTabela] = useState(true);
   const [mostrarBotaoTabela, setMostrarBotaoTabela] = useState(true);
@@ -30,9 +32,9 @@ export default function Funcionario() {
         backgroundColor={"#e8661e"}
         color={"white"}
       >
-        {mostrarBotaoTabela ? "Cadastrar Funcionário" : "Voltar"}
+        {mostrarBotaoTabela ? "Cadastrar fornecedor" : "Voltar"}
       </Button>}
-      {mostrarTabela ?<TabelaFuncionario handleMostrar={handleMostrar} mostrarTabela={mostrarTabela} setMostrarBotaoVoltarEditar={setMostrarBotaoVoltarEditar} mostrarBotaoVoltarEditar={mostrarBotaoVoltarEditar}/>: <NovoFuncionario handleMostrar={handleMostrar} /> }
+      {mostrarTabela ?<TabelaFornecedor handleMostrar={handleMostrar} mostrarTabela={mostrarTabela} setMostrarBotaoVoltarEditar={setMostrarBotaoVoltarEditar} mostrarBotaoVoltarEditar={mostrarBotaoVoltarEditar}/>: <NovoFornecedor handleMostrar={handleMostrar} /> }
       
     </Box>
   );

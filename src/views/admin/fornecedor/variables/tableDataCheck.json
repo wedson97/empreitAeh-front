@@ -1,0 +1,31 @@
+[{
+  "name":["Fazer as paredes",true],
+  "quantity": 2458, 
+  "date": "12 Jan 2024",
+  "progress": 17.5  
+},
+{
+  "name":["Fazer as janelas",true],
+  "quantity": 1485, 
+  "date": "21 Feb 2024",
+  "progress": 10.8  
+},
+{
+  "name":["Colocar as portas",true],
+  "quantity": 1024, 
+  "date": "13 Mar 2024",
+  "progress": 21.3  
+},
+{
+  "name":["Colocar as tomadas",true],
+  "quantity": 858, 
+  "date": "24 Jan 2024",
+  "progress": 31.5  
+},
+{
+  "name":["Colocar a ceramica",false],
+  "quantity": 258, 
+  "date": "24 Oct 2024",
+  "progress": 12.2  
+}
+]

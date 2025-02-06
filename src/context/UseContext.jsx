@@ -15,8 +15,10 @@ export const UserProvider = ({ children }) => {
   const [donoObra, setDonoObra] = useState(null);
   // FUNCIONARIOS
   const [funcionarios, setFuncionarios] = useState([]);
+  // FORNECEDORES
+  const [fornecedores, setFornecedores] = useState([]);
   // ACCESS_TOKEN
-  const [accessToken, setAccessToken] = useState('APP_USR-3911354165422158-101610-aaf89ff52bdf9345a484843225ba4ea7-1929055828');
+  const [accessToken, setAccessToken] = useState('');
   //  PAGAMENTOS
   const [pagamentos, setPagamentos] = useState([]);
   
@@ -79,7 +81,7 @@ export const UserProvider = ({ children }) => {
     performLogin();
   }, []);
   return (
-    <UserContext.Provider value={{pagamentos, setPagamentos, accessToken, setAccessToken,orcamentos, setOrcamentos, obras, setObras,empreiteiro, setEmpreiteiro, donoObra, setDonoObra, funcionarios, setFuncionarios }}>
+    <UserContext.Provider value={{pagamentos, setPagamentos, accessToken, setAccessToken,orcamentos, setOrcamentos, obras, setObras,empreiteiro, setEmpreiteiro, donoObra, setDonoObra, funcionarios, setFuncionarios, fornecedores, setFornecedores }}>
       {children}
     </UserContext.Provider>
   );

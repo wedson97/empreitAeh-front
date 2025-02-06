@@ -24,6 +24,7 @@ import SignInCentered from 'views/auth/signIn';
 import SignUpEmpreiteiro from 'views/auth/signUp/SingUpEmpreiteiro';
 import SingUpDonoObra from 'views/auth/signUp/SingUpDonoObra';
 import Principal from 'views/auth/Principal/Index';
+import Fornecedor from 'views/admin/fornecedor';
 
 const routes = [
   {
@@ -76,12 +77,20 @@ const routes = [
   }
   ,
   {
-    name: 'Funcionario',
+    name: 'Funcionário',
     layout: '/admin',
     path: '/funcionario',
     icon: <Icon as={MdEngineering} width="20px" height="20px" color="inherit" />,
     component: <Funcionario />,
   },{
+    name: 'Fornecedor',
+    layout: '/admin',
+    path: '/fornecedor',
+    icon: <Icon as={MdEngineering} width="20px" height="20px" color="inherit" />,
+    component: <Fornecedor />,
+  },
+  
+  {
     name: 'Pagamentos',
     layout: '/admin',
     path: '/pagamentos',

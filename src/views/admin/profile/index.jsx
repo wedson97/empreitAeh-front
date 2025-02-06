@@ -11,14 +11,13 @@ import CadastroEndereco from "../default/components/CadastrarEndereco";
 
 export default function Overview() {
   const [editarPerfil, setEditarPerfil] = useState(false);
-  const nome = localStorage.getItem("usuario");
-  const tipo = localStorage.getItem("userType");
-
+  const tipo_usuario = localStorage.getItem("tipo_usuario")
+	const id = localStorage.getItem("id")
+  const name = localStorage.getItem("nome")
   const getTipoUsuario = () => {
-    console.log(tipo);
-    if (tipo === "dono_obra") {
+    if (tipo_usuario === "dono_obra") {
       return "Dono de obra";
-    } else if (tipo === "empreiteiro") {
+    } else if (tipo_usuario === "empreiteiro") {
       return "Empreiteiro";
     }
   };
@@ -58,7 +57,7 @@ export default function Overview() {
             gridArea="1 / 1 / 2 / 2"
             banner={banner}
             avatar={avatar}
-            name={nome}
+            name={name}
             job={getTipoUsuario()}
           />
         </Grid>

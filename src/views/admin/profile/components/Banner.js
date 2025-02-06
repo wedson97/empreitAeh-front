@@ -12,6 +12,8 @@ export default function Banner(props) {
     "white !important",
     "#111C44 !important"
   );
+  console.log(name);
+  
   return (
     <Card mb={{ base: "0px", lg: "20px" }} align='center'>
       <Box

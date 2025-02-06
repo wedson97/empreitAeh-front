@@ -23,60 +23,62 @@ import React, { useEffect, useState } from "react";
 import { useUser } from "context/UseContext";
 import api from "api/requisicoes";
 import { MdBuild } from "react-icons/md";
-import EditarFuncionario from "./EditarFuncionario";
 import { IoMdCloseCircle } from "react-icons/io";
+import EditarFornecedor from "./EditarFornecedor";
 
-export default function TabelaFuncionario({handleMostrar, mostrarTabela, setMostrarBotaoVoltarEditar, mostrarBotaoVoltarEditar}) {
-  const { funcionarios, setFuncionarios, empreiteiro } = useUser();
+export default function TabelaFornecedor({handleMostrar, mostrarTabela, setMostrarBotaoVoltarEditar, mostrarBotaoVoltarEditar}) {
+  const { fornecedores, setFornecedores, empreiteiro } = useUser();
   const [mostrarEditar, setMostrarEditar] = useState(false);
-  const [funcionarioSelecionado, setFuncionarioSelecionado] = useState(null);
+  const [fornecedoreselecionado, setFornecedoreselecionado] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     window.scrollTo(0, 0);
+
     const fetchData = async () => {
-      const token = localStorage.getItem("token"); 
-      const response = await api.get(`/funcionarios`,
-        {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("Token de autenticação não encontrado.");
+          return;
+        }
+        const response = await api.get('/fornecedores', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
-      console.log(response.data);
-        
-      setFuncionarios(response.data);
-    }
+        setFornecedores(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar fornecedores:", error);
+      }
+    };
     fetchData();
+    
   }, []);
 
-  function formatarCPF(cpf) {
-    return cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
-  }
-
-  const abrirEditarFuncionario = (funcionario) => {
-    setFuncionarioSelecionado(funcionario);
+  const abrirEditarFornecedor = (fornecedor) => {
+    setFornecedoreselecionado(fornecedor);
     setMostrarEditar(true);
     setMostrarBotaoVoltarEditar(true);
   };
 
-  const abrirExclusaoFuncionario = (funcionario) => {
-    setFuncionarioSelecionado(funcionario);
+  const abrirExclusaoFornecedor = (fornecedor) => {
+    setFornecedoreselecionado(fornecedor);
     onOpen();
   };
   const toast = useToast();
   
   const handleConfirmarExclusao = async () => {
-    const token = localStorage.getItem("token"); 
     try {
-      const response = await api.delete(`/funcionario/${funcionarioSelecionado.id}`,
-        {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+      const token = localStorage.getItem("token");
+      const response = await api.delete(`/fornecedor/`+fornecedoreselecionado.id, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
   
       if (response.status >= 200 && response.status < 300) {
-        setFuncionarios(funcionarios.filter(f => f.id !== funcionarioSelecionado.id));
+        setFornecedores(fornecedores.filter(f => f.id !== fornecedoreselecionado.id));
         toast({
           title: "Exclusão de funcionário",
           description: `Excluído com sucesso`,
@@ -110,10 +112,10 @@ export default function TabelaFuncionario({handleMostrar, mostrarTabela, setMost
   return (
     <>
       {mostrarEditar ? (
-        <EditarFuncionario 
+        <EditarFornecedor 
           setMostrarEditar={setMostrarEditar} 
           mostrarBotaoVoltarEditar={mostrarBotaoVoltarEditar} 
-          funcionarioSelecionado={funcionarioSelecionado} 
+          fornecedoreselecionado={fornecedoreselecionado} 
           setMostrarBotaoVoltarEditar={setMostrarBotaoVoltarEditar} 
         />
       ) : (
@@ -125,26 +127,23 @@ export default function TabelaFuncionario({handleMostrar, mostrarTabela, setMost
                 <Thead>
                   <Tr>
                     <Th>Nome</Th>
-                    <Th>Telefone</Th>
-                    <Th>CPF</Th>
-                    <Th>Data de nascimento</Th>
-                    <Th>Opções</Th>
+                    <Th>Email</Th>
+                    <Th>telefone</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {funcionarios.map((funcionario) => (
-                    <Tr key={funcionario.id}>
-                      <Td>{funcionario.nome}</Td>
-                      <Td>{funcionario.telefone}</Td>
-                      <Td>{formatarCPF(funcionario.cpf)}</Td>
-                      <Td>{new Date(new Date(funcionario.data_nascimento).setDate(new Date(funcionario.data_nascimento).getDate() + 1)).toLocaleDateString("pt-BR")}</Td>
+                  {fornecedores.map((fornecedor) => (
+                    <Tr key={fornecedor.id}>
+                      <Td>{fornecedor.nome}</Td>
+                      <Td>{fornecedor.email}</Td>
+                      <Td>{fornecedor.telefone}</Td>
                       <Td>
                         <IconButton
                           backgroundColor="#2b6cb0"
                           color="white"
                           aria-label="Editar"
                           icon={<MdBuild />}
-                          onClick={() => abrirEditarFuncionario(funcionario)}
+                          onClick={() => abrirEditarFornecedor(fornecedor)}
                           mr={1}
                         />
                         <IconButton
@@ -152,7 +151,7 @@ export default function TabelaFuncionario({handleMostrar, mostrarTabela, setMost
                           color="white"
                           aria-label="Excluir"
                           icon={<IoMdCloseCircle />}
-                          onClick={() => abrirExclusaoFuncionario(funcionario)}
+                          onClick={() => abrirExclusaoFornecedor(fornecedor)}
                           mr={1}
                         />
                       </Td>
@@ -168,7 +167,7 @@ export default function TabelaFuncionario({handleMostrar, mostrarTabela, setMost
               <ModalContent>
                 <ModalHeader>Confirmar exclusão</ModalHeader>
                 <ModalBody>
-                  Tem certeza que deseja excluir o funcionário {funcionarioSelecionado?.nome}?
+                  Tem certeza que deseja excluir o funcionário {fornecedoreselecionado?.nome}?
                 </ModalBody>
                 <ModalFooter>
                   <Button colorScheme="gray" mr={3} onClick={onClose}>

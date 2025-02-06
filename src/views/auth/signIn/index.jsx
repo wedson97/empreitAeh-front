@@ -46,10 +46,9 @@ function SignIn() {
   const {setDonoObra, setEmpreiteiro, editarPerfil, setEditarPerfil} = useUser();
   
   useEffect(() => {
-    const usuario = localStorage.getItem("usuario");
-    const email = localStorage.getItem("email");
-
-    if (usuario !== null && email !== null) {
+    const tipo_usuario = localStorage.getItem("tipo_usuario")
+	  const id = localStorage.getItem("id")
+    if (tipo_usuario !== null && id !== null) {
       navigate("/admin/default");
     }
 
@@ -61,7 +60,7 @@ function SignIn() {
  
   const [formData, setFormData] = useState({
     email: '',
-    senha: ' '
+    senha: ''
   });
 
   const handleInputChange = (e) => {
@@ -73,41 +72,80 @@ function SignIn() {
   };
   const toast = useToast();
  
-  const handleSubmit = async (user) => {
-    const data = new FormData();
-    data.append('email', formData.email);
-    data.append('senha', formData.senha);
+  // const handleSubmit = async (user) => {
+  //   const data = new FormData();
+  //   data.append('email', formData.email);
+  //   data.append('senha', formData.senha);
+    
+  //   try {
+
+  //     const response = await api.post("/login",{email:user.email, senha:""})
+  //     if(response.status===200){
+        
+  //       if (response.data.tipo_usuario.id === 3) {
+  //         setEmpreiteiro(response.data);
+  //         localStorage.setItem("userType", "empreiteiro");
+  //       } else if (response.data.tipo_usuario.id === 2) {
+  //         setDonoObra(response.data);
+  //         localStorage.setItem("userType", "dono_obra");
+  //       }
+        
+  //       setFormData({email: '',senha: ''})
+  //       navigate("/admin/default")
+  //       localStorage.setItem("id",response.data.id)
+  //       localStorage.setItem("email",response.data.email)
+  //       localStorage.setItem("usuario", response.data.nome)
+  //       if(response.data.tipo_usuario.id === 2 && response.data.endereco.cidade===null && response.data.endereco.bairro===null && response.data.endereco.rua===null){
+  //         // navigate("/admin/perfil")
+  //         // setEditarPerfil(true)
+  //         // toast({
+  //         //   title: "Completar cadastro",
+  //         //   description: `Para utilizar todas as funcionalidades do sistema, cadastre seu endereço atual!`,
+  //         //   status: "success",
+  //         //   duration: 6000,
+  //         //   isClosable: true,
+  //         //   });
+  //       }
+        
+  //     }else{
+  //       toast({
+  //         title: "Falha no login",
+  //         description: `Verifique suas credenciais!`,
+  //         status: "error",
+  //         duration: 3000,
+  //         isClosable: true,
+  //         });
+  //     }
+  //   } catch (AxiosError) {
+  //     toast({
+  //       title: "Falha no login",
+  //       description: `Verifique suas credenciais!`,
+  //       status: "error",
+  //       duration: 3000,
+  //       isClosable: true,
+  //       });
+  //   }
+  // }
+   const handleSubmit = async (user) => {
     
     try {
 
-      const response = await api.post("/login",{email:user.email, senha:" "})
+      const response = await api.post("/login_firebase",{token:user})
       if(response.status===200){
-        
-        if (response.data.tipo_usuario.id === 3) {
-          setEmpreiteiro(response.data);
-          localStorage.setItem("userType", "empreiteiro");
-        } else if (response.data.tipo_usuario.id === 2) {
-          setDonoObra(response.data);
-          localStorage.setItem("userType", "dono_obra");
+        function decodificarJWT(token) {
+          const partes = token.split('.');
+          
+          const header = JSON.parse(atob(partes[0]));
+          const payload = JSON.parse(atob(partes[1]));
+          
+          return { header, payload };
         }
+        localStorage.setItem("token",response.data.token)
+        const resultado = decodificarJWT(response.data.token);
         
-        setFormData({email: '',senha: ''})
+        localStorage.setItem("tipo_usuario",resultado.payload.user.tipo_usuario)
+        localStorage.setItem("id",resultado.payload.user.id)
         navigate("/admin/default")
-        localStorage.setItem("id",response.data.id)
-        localStorage.setItem("email",response.data.email)
-        localStorage.setItem("usuario", response.data.nome)
-        if(response.data.tipo_usuario.id === 2 && response.data.endereco.cidade===null && response.data.endereco.bairro===null && response.data.endereco.rua===null){
-          // navigate("/admin/perfil")
-          // setEditarPerfil(true)
-          // toast({
-          //   title: "Completar cadastro",
-          //   description: `Para utilizar todas as funcionalidades do sistema, cadastre seu endereço atual!`,
-          //   status: "success",
-          //   duration: 6000,
-          //   isClosable: true,
-          //   });
-        }
-        
       }else{
         toast({
           title: "Falha no login",
@@ -129,14 +167,14 @@ function SignIn() {
   }
 const handleGoogleSignUp = async () => {
     const auth = getAuth();
-    console.log(auth);
+    // console.log(auth);
     
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      
-      handleSubmit(user)
+      localStorage.setItem("nome",user.displayName)
+      handleSubmit(user.accessToken)
     } catch (error) {
       toast({
         title: "Erro ao entrar com Google!",

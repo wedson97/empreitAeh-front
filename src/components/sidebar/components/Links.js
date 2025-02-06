@@ -49,8 +49,13 @@ export function SidebarLinks(props) {
         route.layout === "/auth" ||
         route.layout === "/rtl"
       ) {
+        const tipo_usuario = localStorage.getItem("tipo_usuario");
+        const id = localStorage.getItem("id");
         // Condição para mostrar a rota de funcionário apenas se empreiteiro for diferente de null
-        if (route.name === "Funcionario" && !empreiteiro) {
+        if (route.name === "Funcionário" && tipo_usuario === 'dono_obra') {
+          return null;
+        }
+        if (route.name === "Fornecedor" && tipo_usuario === 'dono_obra') {
           return null;
         }
   

@@ -7,11 +7,11 @@ import { useNavigate } from 'react-router-dom';
 
 export default function AdminNavbar(props) {
 	const [ scrolled, setScrolled ] = useState(false);
-	const nome = localStorage.getItem("usuario")
-	const email = localStorage.getItem("email")
+	const tipo_usuario = localStorage.getItem("tipo_usuario")
+	const id = localStorage.getItem("id")
 	const navegate = useNavigate();
 	useEffect(() => {
-		if( email===null && nome===null){
+		if( tipo_usuario===null && id===null){
 			navegate("/")
 		  }else{
 			window.addEventListener('scroll', changeNavbar);

@@ -27,6 +27,7 @@ import { IoMdMoon, IoMdSunny } from 'react-icons/io';
 import { FaEthereum } from 'react-icons/fa';
 import routes from 'routes';
 import { useUser } from 'context/UseContext';
+import { getAuth } from 'firebase/auth';
 export default function HeaderLinks(props) {
   const { secondary } = props;
   const { colorMode, toggleColorMode } = useColorMode();
@@ -43,12 +44,21 @@ export default function HeaderLinks(props) {
     '14px 17px 40px 4px rgba(112, 144, 176, 0.18)',
     '14px 17px 40px 4px rgba(112, 144, 176, 0.06)',
   );
-  const nome = localStorage.getItem("usuario");
+  const nome = localStorage.getItem("nome");
   const borderButton = useColorModeValue('secondaryGray.500', 'whiteAlpha.200');
   const {setEmpreiteiro, setDonoObra, setOrcamentos, setObras} = useUser();
   const handleClick = () =>{
-    localStorage.removeItem("email")
-    localStorage.removeItem("usuario")
+    const auth = getAuth();
+    auth.signOut().then(()=>{
+      console.log("logout");
+    })
+    
+    const auth2 = getAuth();
+    console.log(auth2);
+    localStorage.removeItem("nome")
+    localStorage.removeItem("tipo_usuario")
+    localStorage.removeItem("token")
+    localStorage.removeItem("id")
     setEmpreiteiro(null)
     setDonoObra(null)
     setOrcamentos([])

@@ -2,6 +2,7 @@ import { Box, Button, FormControl, FormLabel, Input, SimpleGrid, Modal, ModalOve
 import api from "api/requisicoes";
 import { useUser } from "context/UseContext";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function CadastroEndereco() {
   const {donoObra, setDonoObra} = useUser()
@@ -9,17 +10,32 @@ export default function CadastroEndereco() {
     cep: "",
     cidade: "",
     bairro: "",
+    uf:"",
     rua: "",
     numero: ""
   });
+  const tipo_usuario = localStorage.getItem("tipo_usuario");
+  const id = localStorage.getItem("id");
   useEffect(() => {
-    toast({
-      title: "Complete seu cadastro",
-      description: "Cadastre seu endereço atual",
-      status: "success",
-      duration: 4000,
-      isClosable: true,
-    });
+    const fetchObras = async () => {
+            try {
+              if (tipo_usuario === 'dono_obra'){
+                const response = await api.get(`/dono_obra/${id}/endereco`);
+                
+                
+              }
+            } catch (error) {
+              toast({
+                title: "Complete seu cadastro",
+                description: "Cadastre seu endereço atual",
+                status: "success",
+                duration: 4000,
+                isClosable: true,
+              });
+            }
+          }
+          fetchObras()
+    
   }, []);
   const toast = useToast();
   
@@ -29,14 +45,17 @@ export default function CadastroEndereco() {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
+  const navigate = useNavigate()
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     onOpen();
   };
-
+  
   const handleConfirmarAlteracao = async () => {
-    const response = await api.post(`/dono_obra/${donoObra.id}/endereco`, formData)
+    console.log(formData);
+    
+    const response = await api.post(`/dono_obra/${id}/endereco`, formData)
     if(response.status===201){
         toast({
             title: "Cadastro concluído!",
@@ -50,10 +69,10 @@ export default function CadastroEndereco() {
             cidade: "",
             bairro: "",
             rua: "",
+            uf: "",
             numero: ""
           })
-          setDonoObra(response.data);
-          
+          navigate('/admin')
     }else{
         toast({
             title: "Erro",
@@ -86,8 +105,22 @@ export default function CadastroEndereco() {
             <Input
               name="cep"
               value={formData.cep}
+              type="number"
               onChange={handleInputChange}
               placeholder="Digite seu CEP"
+              mb="24px"
+              variant="auth"
+              fontSize="sm"
+              fontWeight="500"
+            />
+          </FormControl>
+          <FormControl id="uf">
+            <FormLabel>UF</FormLabel>
+            <Input
+              name="uf"
+              value={formData.uf}
+              onChange={handleInputChange}
+              placeholder="Digite seu uf"
               mb="24px"
               variant="auth"
               fontSize="sm"

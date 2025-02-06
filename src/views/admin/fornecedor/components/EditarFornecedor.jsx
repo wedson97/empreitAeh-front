@@ -3,14 +3,14 @@ import { Box, Button, FormControl, FormLabel, Input, Modal, ModalBody, ModalCont
 import { useUser } from "context/UseContext";
 import api from "api/requisicoes";
 
-export default function EditarFuncionario({setMostrarEditar, funcionarioSelecionado, setMostrarBotaoVoltarEditar,mostrarBotaoVoltarEditar}) {
-    const { empreiteiro, setFuncionarios} = useUser();
+export default function EditarFornecedor({setMostrarEditar, fornecedoreselecionado, setMostrarBotaoVoltarEditar,mostrarBotaoVoltarEditar}) {
+    const { empreiteiro, setFornecedores} = useUser();
     
-    const [formDataFuncionario, setFormDataFuncionario] = useState({
-        nome: funcionarioSelecionado.nome,
-        telefone: funcionarioSelecionado.telefone,
-        cpf: funcionarioSelecionado.cpf,
-        data_nascimento: funcionarioSelecionado.data_nascimento
+    const [formDataFornecedor, setFormDataFornecedor] = useState({
+        id: fornecedoreselecionado.id,
+        nome: fornecedoreselecionado.nome,
+        email: fornecedoreselecionado.email,
+        telefone: fornecedoreselecionado.telefone
     });
     const toast = useToast();
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -20,33 +20,30 @@ export default function EditarFuncionario({setMostrarEditar, funcionarioSelecion
       };
     const handleConfirmarEdicao = async (e) => {
         e.preventDefault();
-        console.log(formDataFuncionario);
-        const token = localStorage.getItem("token"); 
+        
         try {
-            const response = await api.put(`/funcionario/${funcionarioSelecionado.id}`, formDataFuncionario,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
+            const token = localStorage.getItem("token");
+            const response = await api.put(`/fornecedor/${fornecedoreselecionado.id}`, formDataFornecedor, {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              })
             if (response.status===200){
                 toast({
-                    title: "Edição de funcionario!",
-                    description: `Funcionário ${formDataFuncionario.nome} atualizado com sucesso!`,
+                    title: "Edição de Fornecedor!",
+                    description: `Fornecedor ${formDataFornecedor.nome} atualizado com sucesso!`,
                     status: "success",
                     duration: 3000,
                     isClosable: true,
                     });
-                console.log(response.data);
-                const response_get_funcionarios = await api.get(`/funcionarios`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    });
+                const response_get_funcionarios = await api.get(`/fornecedores`, {
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                    },
+                  })
                 if (response_get_funcionarios.status===200){
                     handleClickButtonVoltar()
-                    setFuncionarios(response_get_funcionarios.data)
+                    setFornecedores(response_get_funcionarios.data)
                     onClose()
                 }
                     
@@ -54,8 +51,8 @@ export default function EditarFuncionario({setMostrarEditar, funcionarioSelecion
             }
         } catch (error) {
             toast({
-                title: "Edição de funcionario!",
-                description: `Edição de funcionario falhou!`,
+                title: "Edição de Fornecedor!",
+                description: `Edição de Fornecedor falhou!`,
                 status: "error",
                 duration: 3000,
                 isClosable: true,
@@ -66,7 +63,7 @@ export default function EditarFuncionario({setMostrarEditar, funcionarioSelecion
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormDataFuncionario((prevData) => ({
+        setFormDataFornecedor((prevData) => ({
             ...prevData,
             [name]: value,
         }));
@@ -100,45 +97,30 @@ export default function EditarFuncionario({setMostrarEditar, funcionarioSelecion
                     <Input
                         isRequired
                         name="nome"
-                        value={formDataFuncionario.nome}
+                        value={formDataFornecedor.nome}
                         onChange={handleInputChange}
                     />
                 </FormControl>
+                <FormControl id="Email">
+                    <FormLabel>Email</FormLabel>
+                    <Input
+                        value={formDataFornecedor.email}
+                        isRequired
+                        variant="auth"
+                        name="email"
+                        type="email" 
+                        placeholder="Digite seu email"
+                        onChange={handleInputChange}
+                    />
+                </FormControl>
+
+
                 <FormControl id="telefone">
                     <FormLabel>Telefone</FormLabel>
                     <Input
                         isRequired
                         name="telefone"
-                        type="number"
-                        value={formDataFuncionario.telefone}
-                        onChange={handleInputChange}
-                    />
-                </FormControl>
-                <FormControl id="cpf">
-                    <FormLabel>CPF do funcionário</FormLabel>
-                    <Input
-                        isRequired
-                        variant='auth'
-                        name="cpf"
-                        type='text'
-                        placeholder='xxx.xxx.xxx-xx'
-                        fontSize='sm'
-                        ms={{ base: "0px", md: "0px" }}
-                        mb='24px'
-                        fontWeight='500'
-                        size='md'
-                        value={formDataFuncionario.cpf}
-                        onChange={handleInputChange}
-                    />
-                </FormControl>
-
-                <FormControl id="data_nascimento">
-                    <FormLabel>Data de nascimento</FormLabel>
-                    <Input
-                        isRequired
-                        type="date"
-                        name="data_nascimento"
-                        value={formDataFuncionario.data_nascimento}
+                        value={formDataFornecedor.telefone}
                         onChange={handleInputChange}
                     />
                 </FormControl>

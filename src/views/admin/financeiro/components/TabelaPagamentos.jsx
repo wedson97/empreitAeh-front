@@ -27,11 +27,12 @@ export default function TabelaPagamentos({setPagarDispesas, obraSelecionada, set
   const navigate = useNavigate();
   useEffect(() => {
     window.scrollTo(0, 0);
-    const email = localStorage.getItem("email");
-    const usuario = localStorage.getItem("usuario");
+    const tipo_usuario = localStorage.getItem("tipo_usuario")
+	  const id = localStorage.getItem("id")
+    
     setObraSelecionada(null)
     setPagamentos([])
-    if (!email && !usuario) {
+    if (tipo_usuario === null && id === null) {
       navigate("/");
     }
 

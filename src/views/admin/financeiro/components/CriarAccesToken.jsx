@@ -12,10 +12,9 @@ export const useMercadoPagoAccessToken = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    const email = localStorage.getItem("email");
-    const usuario = localStorage.getItem("usuario");
-
-    if (!email && !usuario) {
+    const tipo_usuario = localStorage.getItem("tipo_usuario")
+	  const id = localStorage.getItem("id")
+    if (tipo_usuario === null && id === null) {
       navigate("/");
     }
     const urlParams = new URLSearchParams(window.location.search);

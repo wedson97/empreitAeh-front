@@ -40,17 +40,16 @@ function SignUpEmpreiteiro() {
   const [show, setShow] = React.useState(false);
 
 
-    const [loading, setLoading] = useState(false);
-    const [step, setStep] = useState(1); // Step para controle de navegação
+  const [loading, setLoading] = useState(false);
+  const [step, setStep] = useState(1); // Step para controle de navegação
   
   const handleClick = () => setShow(!show);
   const [formData, setFormData] = useState({
     nome: '',
     cpf: '',
-    cnpj: null,
+    cnpj: '',
     email: '',
-    senha: ' ',
-    tipo_usuario: 3
+    tipo_usuario: "empreiteiro"
   });
  const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -60,10 +59,9 @@ function SignUpEmpreiteiro() {
     }));
   };
   useEffect(() => {
-    const usuario = localStorage.getItem("usuario");
-    const email = localStorage.getItem("email");
-
-    if (usuario !== null && email !== null) {
+    const tipo_usuario = localStorage.getItem("tipo_usuario")
+	  const id = localStorage.getItem("id")
+    if (tipo_usuario !== null && id !== null) {
       navigate("/admin/default");
     }
 
@@ -72,17 +70,11 @@ function SignUpEmpreiteiro() {
   const toast = useToast();
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const data = new FormData();
-    data.append('nome', formData.nome);
-    data.append('cpf', formData.cpf);
-    data.append('cnpj', formData.cnpj);
-    data.append('email', formData.email);
-    data.append('senha', formData.senha);
-    data.append('tipo', formData.tipo);
+    console.log(formData);
+    
     try {
       const response = await api.post("/empreiteiros",formData)
-      setFormData({nome: '',cpf: '',cnpj: '',email: '',senha: '',tipo: ''})
+      setFormData({nome: '',cpf: '',cnpj: '',email: '',tipo_usuario: ''})
       toast({
         title: "Cadastrado com sucesso!",
         description: `O empreiteiro ${formData.nome} foi cadastro com sucesso!`,
@@ -187,7 +179,7 @@ function SignUpEmpreiteiro() {
               <FormControl>
                 <FormLabel>CPF</FormLabel>
                 <InputMask
-                  mask="999.999.999-99"
+                  mask="99999999999"
                   value={formData.cpf}
                   onChange={handleInputChange}
                   name="cpf"

@@ -30,8 +30,8 @@ function SignUpDonoObra() {
     cpf: '',
     cnpj: '',
     email: '',
-    senha: ' ',
-    id_tipo_usuario: 2
+    id_endereco:'',
+    id_tipo_usuario: "dono_obra"
   });
 
   const [loading, setLoading] = useState(false);
@@ -156,24 +156,12 @@ function SignUpDonoObra() {
               <FormControl>
                 <FormLabel>CPF</FormLabel>
                 <InputMask
-                  mask="999.999.999-99"
+                  mask="99999999999"
                   value={formData.cpf}
                   onChange={handleInputChange}
                   name="cpf"
                   maskChar={null}
                   required
-                >
-                  {(inputProps) => <Input {...inputProps} />}
-                </InputMask>
-              </FormControl>
-              <FormControl mt={4}>
-                <FormLabel>CNPJ (opcional)</FormLabel>
-                <InputMask
-                  mask="99.999.999/9999-99"
-                  value={formData.cnpj}
-                  onChange={handleInputChange}
-                  name="cnpj"
-                  maskChar={null}
                 >
                   {(inputProps) => <Input {...inputProps} />}
                 </InputMask>
