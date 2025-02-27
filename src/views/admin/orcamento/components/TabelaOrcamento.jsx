@@ -31,13 +31,14 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from "context/UseContext";
 import PdfOrcamento from "./PdfOrcamento";
   
-export default function TabelaOrcamento() {
+export default function TabelaOrcamento({obra}) {
   const {orcamentos, setOrcamentos} = useUser()
   const [isPdfVisible, setPdfVisible] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const {empreiteiro, donoObra} = useUser();
   const { isOpen: isConfirmar, onOpen: onConfirmarOpen, onClose: onConfirmarClose } = useDisclosure();
   const { isOpen: isRejeitarModalOpen, onOpen: onRejeitarOpen, onClose: onRejeitarClose } = useDisclosure();
+  const [obraSelecionada, setObraSelecionada] = useState(null);
     const navigate = useNavigate();
     const modalAprovarOrcamento = async (row) =>{
       setSelectedRow(row)
@@ -129,16 +130,19 @@ export default function TabelaOrcamento() {
           navigate("/");
         } else {
           try {
-            let response;
-            if (empreiteiro) {
-              response = await api.get(`/empreiteiro/${empreiteiro.id}/orcamentos`);
-            } else if (donoObra) {
-              
-              response = await api.get(`/dono_obra/${donoObra.id}/orcamentos`);
+            if (obraSelecionada !== null) {
+              const token = localStorage.getItem("token"); 
+              const response = await api.get('/empreiteiro/obra/'+obra+'/orcamento',
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+              if (response) {
+                setOrcamentos(response.data);
+              }
             }
-            if (response) {
-              setOrcamentos(response.data);
-            }
+            
           } catch (error) {
             console.error("Erro ao buscar os orçamentos:", error);
           }

@@ -165,7 +165,7 @@ function SignIn() {
         });
     }
   }
-const handleGoogleSignUp = async () => {
+const handleGoogleSignIn = async () => {
     const auth = getAuth();
     // console.log(auth);
     
@@ -238,7 +238,7 @@ const handleGoogleSignUp = async () => {
             _hover={googleHover}
             _active={googleActive}
             _focus={googleActive}
-            onClick={handleGoogleSignUp}>
+            onClick={handleGoogleSignIn}>
             <Icon as={FcGoogle} w='20px' h='20px' me='10px' />
             Entrar com o Google
           </Button>

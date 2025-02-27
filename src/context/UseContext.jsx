@@ -21,7 +21,14 @@ export const UserProvider = ({ children }) => {
   const [accessToken, setAccessToken] = useState('');
   //  PAGAMENTOS
   const [pagamentos, setPagamentos] = useState([]);
+
+  const [idEtapaSelecionada, setIdEtapaSelecionada] = useState(null);
   
+  const [obraCadastrada, setObraCadastrada] = useState(null)
+
+  const [ultimaEtapaCadastrada, setUltimaEtapaCadastrada] = useState(null)
+  
+  const [ultimoMaterialCadastrado, setUltimoMaterialCadastrado] = useState("")
 
   const toast = useToast();
   useEffect(() => {
@@ -81,7 +88,7 @@ export const UserProvider = ({ children }) => {
     performLogin();
   }, []);
   return (
-    <UserContext.Provider value={{pagamentos, setPagamentos, accessToken, setAccessToken,orcamentos, setOrcamentos, obras, setObras,empreiteiro, setEmpreiteiro, donoObra, setDonoObra, funcionarios, setFuncionarios, fornecedores, setFornecedores }}>
+    <UserContext.Provider value={{ultimoMaterialCadastrado, setUltimoMaterialCadastrado, ultimaEtapaCadastrada, setUltimaEtapaCadastrada, obraCadastrada, setObraCadastrada, idEtapaSelecionada, setIdEtapaSelecionada, pagamentos, setPagamentos, accessToken, setAccessToken,orcamentos, setOrcamentos, obras, setObras,empreiteiro, setEmpreiteiro, donoObra, setDonoObra, funcionarios, setFuncionarios, fornecedores, setFornecedores }}>
       {children}
     </UserContext.Provider>
   );

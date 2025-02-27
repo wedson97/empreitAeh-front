@@ -11,9 +11,9 @@ export default function Orcamento() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    const tipo_usuario = localStorage.getItem("tipo_usuario")
+    setEmpreiteiro(localStorage.getItem("tipo_usuario"))
 	  const id = localStorage.getItem("id")
-    if (tipo_usuario === null && id === null) {
+    if (empreiteiro === null && id === null) {
       navigate("/");
     }
     
@@ -34,7 +34,7 @@ export default function Orcamento() {
           {showTabela ? "Mostrar Tabela" : "Novo orçamento"}
         </Button>
       )}
-      {showTabela ? <NovoOrcamento setShowTabela={setShowTabela} /> : <TabelaOrcamento />}
+      {showTabela ? <NovoOrcamento setShowTabela={setShowTabela} showTabela={showTabela}/> : <TabelaOrcamento />}
     </Box>
   );
 }
