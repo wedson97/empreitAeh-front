@@ -90,13 +90,13 @@ const routes = [
     component: <Fornecedor />,
   },
   
-  {
-    name: 'Pagamentos',
-    layout: '/admin',
-    path: '/pagamentos',
-    icon: <Icon as={MdMonetizationOn} width="20px" height="20px" color="inherit" />,
-    component: <Pagamentos />,
-  },
+  // {
+  //   name: 'Pagamentos',
+  //   layout: '/admin',
+  //   path: '/pagamentos',
+  //   icon: <Icon as={MdMonetizationOn} width="20px" height="20px" color="inherit" />,
+  //   component: <Pagamentos />,
+  // },
   // {
   //   name: 'RTL Admin',
   //   layout: '/rtl',

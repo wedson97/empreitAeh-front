@@ -21,7 +21,12 @@ import {
     ModalFooter,
     Button,
     useDisclosure,
-    useToast
+    useToast,
+    Spinner,
+    Box,
+    Stack,
+    Divider,
+    Badge
   } from "@chakra-ui/react";
   import React, { useCallback, useEffect, useState} from "react";
   import { IoMdEye, IoMdClock} from "react-icons/io";
@@ -30,6 +35,8 @@ import api from "api/requisicoes";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "context/UseContext";
 import PdfOrcamento from "./PdfOrcamento";
+import { format, parseISO, isValid } from "date-fns";
+import { ptBR } from "date-fns/locale";
   
 export default function TabelaOrcamento({obra}) {
   const {orcamentos, setOrcamentos} = useUser()
@@ -38,6 +45,41 @@ export default function TabelaOrcamento({obra}) {
   const {empreiteiro, donoObra} = useUser();
   const { isOpen: isConfirmar, onOpen: onConfirmarOpen, onClose: onConfirmarClose } = useDisclosure();
   const { isOpen: isRejeitarModalOpen, onOpen: onRejeitarOpen, onClose: onRejeitarClose } = useDisclosure();
+  
+
+  
+
+  
+  const { 
+    isOpen: isDetalhesOpen, 
+    onOpen: onDetalhesOpen, 
+    onClose: onDetalhesClose 
+  } = useDisclosure();
+
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "-";
+  
+    const date = new Date(dateString);
+    
+    if (!isValid(date)) return "-"; // Garante que a data é válida antes de formatar
+  
+    return format(date, "dd/MM/yyyy HH:mm", { locale: ptBR });
+  };
+
+  const handleViewDetails = async (row) => {
+    const token = localStorage.getItem("token"); 
+    const response = await api.get(`/orcamento/${row.id}`,
+    {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+    setSelectedRow(response.data);
+    onDetalhesOpen();
+  };
+  
+  
   const [obraSelecionada, setObraSelecionada] = useState(null);
     const navigate = useNavigate();
     const modalAprovarOrcamento = async (row) =>{
@@ -84,23 +126,45 @@ export default function TabelaOrcamento({obra}) {
     }, [empreiteiro, donoObra, setOrcamentos]);
     const handleAprovarOrcamento = useCallback(async (row) => {
       let response;
+      
+      
       try {
         if (empreiteiro) {
-          response = await api.put(`/empreiteiro/${empreiteiro.id}/orcamento/${row.id}/compactuar`, {
-            data_compactuacao: new Date().toISOString()
+          const token = localStorage.getItem("token"); 
+          response = await api.post(`/empreiteiro/obra/${row.obra[0].id}/orcamento/pactuar`, {
+            data_pactuacao: new Date().toISOString()
+          },
+          {
+              headers: {
+                  Authorization: `Bearer ${token}`
+              }
           });
           if (response && response.status === 200) {
             setOrcamentos((prevOrcamentos) =>
               prevOrcamentos.map((orcamento) =>
                 orcamento.id === row.id
-                  ? { ...orcamento, data_compactuacao: new Date().toISOString() }
+                  ? { ...orcamento, data_pactuacao: new Date().toISOString() }
                   : orcamento
               )
             );
+            toast({
+              title: "Orçamento pactuado",
+              description: "Orçamento pactuado com sucesso!",
+              status: "success",
+              duration: 3000,
+              isClosable: true,
+            });
           }
         } else if (donoObra) {
-          response = await api.put(`/dono_obra/${donoObra.id}/orcamento/${row.id}/aprovar`, {
+          
+          const token = localStorage.getItem("token"); 
+          response = await api.post(`/dono_obra/obra/${row.obra[0].id}/orcamento/aprovar`, {
             data_aprovacao: new Date().toISOString()
+          },
+          {
+              headers: {
+                  Authorization: `Bearer ${token}`
+              }
           });
           if (response && response.status === 200) {
             setOrcamentos((prevOrcamentos) =>
@@ -110,6 +174,13 @@ export default function TabelaOrcamento({obra}) {
                   : orcamento
               )
             );
+            toast({
+              title: "Orçamento aprovado",
+              description: "Orçamento aprovado com sucesso!",
+              status: "success",
+              duration: 3000,
+              isClosable: true,
+            });
           }
         }
         
@@ -130,17 +201,17 @@ export default function TabelaOrcamento({obra}) {
           navigate("/");
         } else {
           try {
-            if (obraSelecionada !== null) {
-              const token = localStorage.getItem("token"); 
-              const response = await api.get('/empreiteiro/obra/'+obra+'/orcamento',
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
-              if (response) {
-                setOrcamentos(response.data);
-              }
+            const token = localStorage.getItem("token"); 
+            const response = await api.get('/orcamentos',
+              {
+                  headers: {
+                      Authorization: `Bearer ${token}`
+                  }
+              });
+
+            if (response) {
+              
+              setOrcamentos(response.data);
             }
             
           } catch (error) {
@@ -152,124 +223,207 @@ export default function TabelaOrcamento({obra}) {
       fetchEmpreiteiro();
     }, [empreiteiro, donoObra, navigate, setOrcamentos]);
 
-    
-    const getStatusIcon = (row) => {
-      
-      if (row.data_aprovacao===null && row.data_compactuacao===null && row.status!=='Reprovado'){
-        return { status: "Em Análise", icon: IoMdClock, color: "blue.600" }
-      }else if(row.data_aprovacao!==null && row.data_compactuacao===null && row.status!=='Reprovado'){
-        return { status: "Esperando empreiteiro", icon: IoMdClock, color: "yellow.600"  }
-      } else if(row.data_compactuacao!==null && row.data_aprovacao===null && row.status!=='Reprovado'){
-        return { status: "Esperando dono da obra",  icon: IoMdClock, color: "yellow.600" }
-      }else if(row.status==='Reprovado'){
-        return { status: "Reprovado",  icon: MdCancel, color: "red" }
-      }else{
-        return {status: "Finalizado", icon: MdCheckCircle, color: "green" };
-      }
-      // switch (status) {
-      //   case "Finalizado":
-      //     return { icon: MdCheckCircle, color: "green" };
-      //   case "Em Andamento":
-      //     return { icon: IoMdHammer , color: "black" };
-      //   case "Em Analise":
-      //     return { icon: IoMdClock , color: "blue.600" };
-      //   case "Pendente":
-      //     return { icon: MdOutlineError , color: "yellow.600" };
-      //   default:
-      //     return null;
-      // }
-    };
+  
 
     const handleViewPdf = (row) => {
       setSelectedRow(row);
       setPdfVisible(true);
     };
 
+
+
+    const ModalDetalhesOrcamento = () => (
+      <Modal isOpen={isDetalhesOpen} onClose={onDetalhesClose} size="xl">
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Detalhes do Orçamento</ModalHeader>
+          <ModalBody>
+            {selectedRow && (
+              <Stack spacing={4}>
+                <Stack>
+                  <Text fontWeight="bold">Descrição:</Text>
+                  <Text>{selectedRow.descricao}</Text>
+                </Stack>
+                
+                <Divider />
+                
+                <Stack direction="row" justify="space-between" flexWrap="wrap">
+                  <Box>
+                    <Text fontWeight="bold">Data Criação:</Text>
+                    <Text>{formatDate(selectedRow.data_criacao)}</Text>
+                  </Box>
+                  <Box>
+                    <Text fontWeight="bold">Data Aprovação:</Text>
+                    <Text>{selectedRow.data_aprovacao ? formatDate(selectedRow.data_aprovacao) : '-'}</Text>
+                  </Box>
+                  <Box>
+                    <Text fontWeight="bold">Data Pactuação:</Text>
+                    <Text>{selectedRow.data_pactuacao ? formatDate(selectedRow.data_pactuacao) : '-'}</Text>
+                  </Box>
+                  
+                </Stack>
+  
+                <Divider />
+  
+                <Stack>
+                  <Text fontWeight="bold" fontSize="lg">Dados Financeiros</Text>
+                  <Stack direction="row" justify="space-between" flexWrap="wrap">
+                    <Box>
+                      <Text>Mão de Obra:</Text>
+                      <Text>R$ {selectedRow.gasto_mao_obra?.toFixed(2)}</Text>
+                    </Box>
+                    <Box>
+                      <Text>Materiais:</Text>
+                      <Text>R$ {selectedRow.gasto_mateiriais?.toFixed(2)}</Text>
+                    </Box>
+                    <Box>
+                      <Text fontWeight="bold">Total:</Text>
+                      <Text fontWeight="bold">R$ {selectedRow.valor_total?.toFixed(2)}</Text>
+                    </Box>
+                  </Stack>
+                </Stack>
+  
+                <Divider />
+  
+                <Stack>
+                  <Text fontWeight="bold" fontSize="lg">Informações da Obra</Text>
+                  <Stack spacing={3}>
+                    <Box>
+                      <Text fontWeight="semibold">Empreiteiro:</Text>
+                      <Text>{selectedRow.obra?.empreiteiro?.nome}</Text>
+                      <Text fontSize="sm" color="gray.600">
+                        Email: {selectedRow.obra?.empreiteiro?.email}
+                      </Text>
+                      <Text fontSize="sm" color="gray.600">
+                        {selectedRow.obra?.empreiteiro?.cnpj ? `CNPJ: ${selectedRow.obra?.empreiteiro?.cnpj}` : `CPF: ${selectedRow.obra?.empreiteiro?.cpf}`}
+                      </Text>
+                    </Box>
+                    
+                    <Box>
+                      <Text fontWeight="semibold">Dono da Obra:</Text>
+                      <Text>{selectedRow.obra?.dono_obra?.nome}</Text>
+                      <Text fontSize="sm" color="gray.600">
+                        Email: {selectedRow.obra?.dono_obra?.email}
+                      </Text>
+                      <Text fontSize="sm" color="gray.600">
+                        CPF: {selectedRow.obra?.dono_obra?.cpf}
+                      </Text>
+                    </Box>
+                    
+                    <Box>
+                      <Text fontWeight="semibold">Endereço:</Text>
+                      <Text>
+                        {selectedRow.obra?.endereco?.rua}, {selectedRow.obra?.endereco?.numero}
+                      </Text>
+                      <Text>
+                        {selectedRow.obra?.endereco?.bairro} - {selectedRow.obra?.endereco?.cidade}/{selectedRow.obra?.endereco?.uf}
+                      </Text>
+                      <Text>CEP: {selectedRow.obra?.endereco?.cep}</Text>
+                    </Box>
+  
+                    <Stack direction="row" spacing={4}>
+                      <Box>
+                        <Text fontWeight="semibold">Data Início:</Text>
+                        <Text>{formatDate(selectedRow.obra?.data_inicio)}</Text>
+                      </Box>
+                      <Box>
+                        <Text fontWeight="semibold">Data Entrega:</Text>
+                        <Text>{formatDate(selectedRow.obra?.data_entrega)}</Text>
+                      </Box>
+                    </Stack>
+  
+                    <Box>
+                      <Text fontWeight="semibold">ID Orçamento:</Text>
+                      <Text>{selectedRow.obra?.id_orcamento}</Text>
+                    </Box>
+                  </Stack>
+                </Stack>
+              </Stack>
+            )}
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onDetalhesClose}>
+              Fechar
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    );
+
+
+
+
+
     
     return (
-        <SimpleGrid  gap='20px' mb='20px' backgroundColor="white" borderRadius="20px" overflow="hidden">
-        <TableContainer>
-          <Table variant="striped" backgroundColor="#f0f3f5">
-            <TableCaption>Registro de orçamentos</TableCaption>
-            <Thead>
-              <Tr>
-                <Th>Dono da obra</Th>
-                <Th>Data do orçamento</Th>
-                <Th>Status</Th>
-                <Th>Opções</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {orcamentos.map((row, index) => {
-                const { status, icon, color } = getStatusIcon(row);
-                return (
-                  <Tr key={index}>
-                    <Td>{row.dono_obra.nome}</Td>
-                    <Td>{new Date(row.data_criacao).toLocaleDateString('pt-BR')}</Td>
-                    <Td>
-                      <Flex align="center">
-                        <Icon as={icon} color={color} boxSize={6} />
-                        <Text fontSize="sm" fontWeight="700" ml={2}>
-                          {status}
-                        </Text>
-                      </Flex>
-                    </Td>
-                    <Td>
+      <SimpleGrid gap='20px' mb='20px' backgroundColor="white" borderRadius="20px" overflow="hidden">
+      <TableContainer>
+        <Table variant="striped" backgroundColor="#f0f3f5">
+          <TableCaption>Registro de orçamentos</TableCaption>
+          <Thead>
+            <Tr>
+              <Th>Descrição</Th>
+              <Th>Data criação</Th>
+              <Th>Opções</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {orcamentos.map((row, index) => (
+              <Tr key={index}>
+                <Td>{row.descricao}</Td>
+                <Td>{formatDate(row.data_criacao)}</Td>
+              
+                <Td>
+                  <Flex gap={2}>
                     <IconButton
-                      backgroundColor="#e8661e"
-                      color="white"
-                      aria-label="Visualizar"
+                      colorScheme="blue"
+                      aria-label="Detalhes"
                       icon={<IoMdEye />}
-                      onClick={() => handleViewPdf(row)}
-                      mr={1}
+                      onClick={() => handleViewDetails(row)}
                     />
-                    
-                    {donoObra && !row.data_aprovacao && row.status !== 'Reprovado' && (
-                      <>
-                        <IconButton
-                          backgroundColor="green"
-                          color="white"
-                          aria-label="Aprovar Orçamento"
-                          icon={<MdCheckCircle />}
-                          onClick={() => modalAprovarOrcamento(row)}
-                          mr={1}
-                        />
-                        <IconButton
-                          backgroundColor="#c51010"
-                          color="white"
-                          aria-label="Cancelar"
-                          onClick={() => modalReprovarOrcamento(row)}
-                          icon={<MdCancel />}
-                        />
-                      </>
-                    )}
+                     {donoObra && !row.data_aprovacao && (
+                          <Button 
+                            backgroundColor="#e8661e" 
+                            color="white" 
+                            _hover={{ backgroundColor: "#d45a1a" }} 
+                            onClick={() => handleAprovarOrcamento(row)}
+                          >
+                            Confirmar
+                          </Button>
+                        )}
 
-                    {empreiteiro && !row.data_compactuacao && row.status !== 'Reprovado' && (
-                      <>
-                        <IconButton
-                          backgroundColor="green"
-                          color="white"
-                          aria-label="Compactuar Orçamento"
-                          icon={<MdCheckCircle />}
-                          onClick={() => modalAprovarOrcamento(row)}
-                          mr={1}
-                        />
-                        <IconButton
-                          backgroundColor="#c51010"
-                          color="white"
-                          aria-label="Cancelar"
-                          icon={<MdCancel />}
-                        />
-                      </>
-                    )}
-                  </Td>
+                        {/* Botão para o empreiteiro */}
+                        {empreiteiro && !row.data_aprovacao && !row.data_pactuacao && (
+                          <Button 
+                            backgroundColor="gray" 
+                            color="white" 
+                            _hover={{ backgroundColor: "#d45a1a" }} 
+                            disabled // Botão cinza e sem onClick
+                          >
+                            Confirmar
+                          </Button>
+                        )}
 
-                  </Tr>
-                );
-              })}
-            </Tbody>
-          </Table>
-        </TableContainer>
+                        {empreiteiro && row.data_aprovacao && !row.data_pactuacao && (
+                          <Button 
+                            backgroundColor="#e8661e" 
+                            color="white" 
+                            _hover={{ backgroundColor: "#d45a1a" }} 
+                            onClick={() => handleAprovarOrcamento(row)} // Supondo que exista uma função para pactuar
+                          >
+                            Pactuar
+                          </Button>
+                        )}
+                    {/* Mantenha os botões de aprovação/reprovação conforme necessário */}
+                  </Flex>
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </TableContainer>
+
+      <ModalDetalhesOrcamento />
         {isPdfVisible && <PdfOrcamento row={selectedRow} setPdfVisible={setPdfVisible} />}
         <Modal isOpen={isConfirmar} onClose={onConfirmarClose}>
         <ModalOverlay />
@@ -282,13 +436,7 @@ export default function TabelaOrcamento({obra}) {
             <Button colorScheme="gray" mr={3} onClick={onConfirmarClose}>
               Cancelar
             </Button>
-            <Button 
-              backgroundColor="#e8661e" 
-              color="white" 
-              _hover={{ backgroundColor: "#d45a1a" }} 
-              onClick={()=>{handleAprovarOrcamento(selectedRow)}}
-            >Confirmar
-            </Button>
+           
           </ModalFooter>
         </ModalContent>
       </Modal>

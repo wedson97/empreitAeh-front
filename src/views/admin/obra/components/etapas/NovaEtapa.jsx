@@ -27,15 +27,11 @@ const NovaEtapa = ({formDataEtapa, setFormDataEtapa, ultimaEtapaCadastrada, obra
       }
   }
   useEffect(() => {
-      
-          
       fetchData()
   }, [ultimaEtapaCadastrada]);
 
   const handleSubmit = async (e) => {
        e.preventDefault();
-          
-        
         try {
           const token = localStorage.getItem("token"); 
           const response = await api.post("/empreiteiro/obra/"+obraCadastrada+"/etapas", formDataEtapa,
@@ -67,64 +63,62 @@ const NovaEtapa = ({formDataEtapa, setFormDataEtapa, ultimaEtapaCadastrada, obra
     };
 
   return (
-    
     <>
-    
-    <Box p={4} maxW="1200px" mx="auto" backgroundColor="white" borderRadius="md" shadow="md">
-      <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={4}>
-        <FormControl id="nome" isRequired>
-          <FormLabel>Nome</FormLabel>
-          <Input
-            type="text"
-            name="nome"
-            value={formDataEtapa.nome}
-            onChange={handleChange}
-            placeholder="Digite o nome"
-          />
-        </FormControl>
+      <Box p={4} maxW="1200px" mx="auto" backgroundColor="white" borderRadius="md" shadow="md">
+        <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={4}>
+          <FormControl id="nome" isRequired>
+            <FormLabel>Nome</FormLabel>
+            <Input
+              type="text"
+              name="nome"
+              value={formDataEtapa.nome}
+              onChange={handleChange}
+              placeholder="Digite o nome"
+            />
+          </FormControl>
 
-        <FormControl id="custo_mao_obra" isRequired>
-          <FormLabel>Custo Mão de Obra</FormLabel>
-          <Input
-            type="number"
-            step="0.01"
-            name="custo_mao_obra"
-            value={formDataEtapa.custo_mao_obra}
-            onChange={handleChange}
-            placeholder="Digite o custo"
-          />
-        </FormControl>
+          <FormControl id="custo_mao_obra" isRequired>
+            <FormLabel>Custo Mão de Obra</FormLabel>
+            <Input
+              type="number"
+              step="0.01"
+              name="custo_mao_obra"
+              value={formDataEtapa.custo_mao_obra}
+              onChange={handleChange}
+              placeholder="Digite o custo"
+            />
+          </FormControl>
 
-        <FormControl id="data_inicio" isRequired>
-          <FormLabel>Data de Início</FormLabel>
-          <Input
-            type="date"
-            name="data_inicio"
-            value={formDataEtapa.data_inicio}
-            onChange={handleChange}
-          />
-        </FormControl>
+          <FormControl id="data_inicio" isRequired>
+            <FormLabel>Data de Início</FormLabel>
+            <Input
+              type="date"
+              name="data_inicio"
+              value={formDataEtapa.data_inicio}
+              onChange={handleChange}
+            />
+          </FormControl>
 
-        <FormControl id="data_finalizacao">
-          <FormLabel>Data de Finalização</FormLabel>
-          <Input
-            type="date"
-            name="data_finalizacao"
-            value={formDataEtapa.data_finalizacao}
-            onChange={handleChange}
-          />
-        </FormControl>
-      </SimpleGrid>
-      {adicionarBotao === true && (
-        <Box display="flex" justifyContent="flex-end" mt={4}>
-          <Button backgroundColor="#e8661e" color="white" onClick={handleSubmit}>
-            Cadastrar Etapa
-          </Button>
-        </Box>
-      )}
-    </Box>
-    
-    <TableContainer>
+          <FormControl id="data_finalizacao">
+            <FormLabel>Data de Finalização</FormLabel>
+            <Input
+              type="date"
+              name="data_finalizacao"
+              value={formDataEtapa.data_finalizacao}
+              onChange={handleChange}
+            />
+          </FormControl>
+        </SimpleGrid>
+        {adicionarBotao === true && (
+          <Box display="flex" justifyContent="flex-end" mt={4}>
+            <Button backgroundColor="#e8661e" color="white" onClick={handleSubmit}>
+              Cadastrar Etapa
+            </Button>
+          </Box>
+        )}
+      </Box>
+      
+      <TableContainer overflowX="auto" mt={4}>
         <Table variant="striped" backgroundColor="#f0f3f5">
           <TableCaption>Registro de obras</TableCaption>
           <Thead>
@@ -149,7 +143,6 @@ const NovaEtapa = ({formDataEtapa, setFormDataEtapa, ultimaEtapaCadastrada, obra
           </Tbody>
         </Table>
       </TableContainer>
-      
     </>
   );
 };

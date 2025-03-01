@@ -67,6 +67,8 @@ export default function Obra() {
     setCriarObra(true);
     setMostrarTabela(false);
     setMostrarBotoesTabela(false);
+    setObraCadastrada(null)
+    setUltimaEtapaCadastrada(null)
   };
 
   const handleNovaEtapa = () => {
@@ -89,7 +91,14 @@ export default function Obra() {
   }, [navigate]);
 
   return (
-    <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
+    <Box
+      pt={{ base: "130px", md: "80px", xl: "80px" }}
+      width="100%"
+      maxWidth="container.xl"
+      mx="auto"
+      px={{ base: 4, md: 8 }}
+    >
+      {/* Botões superiores */}
       {!criarObra && mostrarTabela && (
         <Button
           mb={4}
@@ -102,7 +111,7 @@ export default function Obra() {
       )}
 
       {mostrarBotoesTabela && !mostrarNovaEtapa && !mostrarNovoMaterial && !mostrarAtividades && (
-        <>
+        <Box display="flex" flexWrap="wrap" gap={2}>
           <Button
             onClick={handleVoltarTabela}
             mb={4}
@@ -116,7 +125,6 @@ export default function Obra() {
             mb={4}
             backgroundColor={"#e8661e"}
             color={"white"}
-            ml={"1"}
           >
             Nova atividade
           </Button>
@@ -125,7 +133,6 @@ export default function Obra() {
             mb={4}
             backgroundColor={"#e8661e"}
             color={"white"}
-            ml={"1"}
           >
             Nova Etapa
           </Button>
@@ -134,94 +141,96 @@ export default function Obra() {
             mb={4}
             backgroundColor={"#e8661e"}
             color={"white"}
-            ml={"1"}
           >
             Novo material
           </Button>
-        </>
+        </Box>
       )}
 
-      {criarObra ? (
-        <>
-          <Button
-            onClick={handleVoltarTabela}
-            mb={4}
-            backgroundColor={"#e8661e"}
-            color={"white"}
-          >
-            Voltar
-          </Button>
-          <NovoObra handleVoltarTabela={handleVoltarTabela} />
-        </>
-      ) : mostrarNovaEtapa ? (
-        <>
-          <Button
-            onClick={handleVoltarTabela}
-            mb={4}
-            backgroundColor={"#e8661e"}
-            color={"white"}
-          >
-            Voltar
-          </Button>
-          <NovaEtapa
-            formDataEtapa={formDataEtapa}
-            setFormDataEtapa={setFormDataEtapa}
-            ultimaEtapaCadastrada={ultimaEtapaCadastrada}
-            obraCadastrada={gerenciarObra.id}
-            adicionarBotao={true}
-          />
-        </>
-      ) : mostrarNovoMaterial ? (
-        <>
-          <Button
-            onClick={handleVoltarTabela}
-            mb={4}
-            backgroundColor={"#e8661e"}
-            color={"white"}
-          >
-            Voltar
-          </Button>
-          <NovoMaterial
-            mostrarBotao={true}
-            passos={null}
-            formDataMaterial={formDataMaterial}
-            setFormDataMaterial={setFormDataMaterial}
-            idEtapaSelecionada={idEtapaSelecionada}
-            setIdEtapaSelecionada={setIdEtapaSelecionada}
-            obraCadastrada={obraCadastrada}
-            setObraCadastrada={setObraCadastrada}
-            handleVoltarTabela={handleVoltarTabela}
-          />
-        </>
-      ) : mostrarAtividades ? (
-        <>
-          <Button
-            onClick={handleVoltarTabela}
-            mb={4}
-            backgroundColor={"#e8661e"}
-            color={"white"}
-          >
-            Voltar
-          </Button>
-          <Atividades
-            etapas={etapas}
-            setEtapas={setEtapas}
-            gerenciarObra={gerenciarObra}
+      {/* Container principal dos componentes */}
+      <Box width="100%">
+        {criarObra ? (
+          <>
+            <Button
+              onClick={handleVoltarTabela}
+              mb={4}
+              backgroundColor={"#e8661e"}
+              color={"white"}
+            >
+              Voltar
+            </Button>
+            <NovoObra handleVoltarTabela={handleVoltarTabela} />
+          </>
+        ) : mostrarNovaEtapa ? (
+          <>
+            <Button
+              onClick={handleVoltarTabela}
+              mb={4}
+              backgroundColor={"#e8661e"}
+              color={"white"}
+            >
+              Voltar
+            </Button>
+            <NovaEtapa
+              formDataEtapa={formDataEtapa}
+              setFormDataEtapa={setFormDataEtapa}
+              ultimaEtapaCadastrada={ultimaEtapaCadastrada}
+              obraCadastrada={gerenciarObra.id}
+              adicionarBotao={true}
+            />
+          </>
+        ) : mostrarNovoMaterial ? (
+          <>
+            <Button
+              onClick={handleVoltarTabela}
+              mb={4}
+              backgroundColor={"#e8661e"}
+              color={"white"}
+            >
+              Voltar
+            </Button>
+            <NovoMaterial
+              mostrarBotao={true}
+              passos={null}
+              formDataMaterial={formDataMaterial}
+              setFormDataMaterial={setFormDataMaterial}
+              idEtapaSelecionada={idEtapaSelecionada}
+              setIdEtapaSelecionada={setIdEtapaSelecionada}
+              obraCadastrada={obraCadastrada}
+              setObraCadastrada={setObraCadastrada}
+              handleVoltarTabela={handleVoltarTabela}
+            />
+          </>
+        ) : mostrarAtividades ? (
+          <>
+            <Button
+              onClick={handleVoltarTabela}
+              mb={4}
+              backgroundColor={"#e8661e"}
+              color={"white"}
+            >
+              Voltar
+            </Button>
+            <Atividades
+              etapas={etapas}
+              setEtapas={setEtapas}
+              gerenciarObra={gerenciarObra}
+              handleAtividades={handleAtividades}
+              setAtividades={setAtividades}
+            />
+          </>
+        ) : mostrarTabela ? (
+          <TabelaObras handleGerenciar={handleGerenciar} />
+        ) : (
+          <GerenciarObra
+            mostrarBotoesTabela={mostrarBotoesTabela}
+            setMostrarBotoesTabela={setMostrarBotoesTabela}
+            mostrarAtividades={mostrarAtividades}
             handleAtividades={handleAtividades}
-            setAtividades={setAtividades}
+            gerenciarObra={gerenciarObra}
           />
-        </>
-      ) : mostrarTabela ? (
-        <TabelaObras handleGerenciar={handleGerenciar} />
-      ) : (
-        <GerenciarObra
-          mostrarBotoesTabela={mostrarBotoesTabela}
-          setMostrarBotoesTabela={setMostrarBotoesTabela}
-          mostrarAtividades={mostrarAtividades}
-          handleAtividades={handleAtividades}
-          gerenciarObra={gerenciarObra}
-        />
-      )}
+        )}
+      </Box>
     </Box>
   );
 }

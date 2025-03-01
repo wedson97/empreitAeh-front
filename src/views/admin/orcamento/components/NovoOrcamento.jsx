@@ -96,18 +96,21 @@ export default function NovoOrcamento({setShowTabela, showTabela}) {
     >
       <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={4}>
       <Select
-        width="250px"
-        backgroundColor={"#e8661e"}
-        color={"white"}
-        placeholder="Selecione uma obra"
-        onChange={handleSelectObra}
-      >
-        {obras.map((obra) => (
-          <option key={obra.id} value={obra.id}>
-            Obra: {obra.id}
-          </option>
-        ))}
-      </Select>
+  width="250px"
+  backgroundColor={"#e8661e"}
+  color={"white"}
+  placeholder="Selecione uma obra"
+  onChange={handleSelectObra}
+>
+  {obras
+    .filter((obra) => obra.id_orcamento !== null) // Filtra antes de mapear
+    .map((obra) => (
+      <option key={obra.id} value={obra.id}>
+        Obra: {obra.id}
+      </option>
+    ))}
+</Select>
+
       </SimpleGrid>
 
       <FormControl id="descricao" mt={4}>

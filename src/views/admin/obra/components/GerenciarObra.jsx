@@ -19,7 +19,7 @@ import api from "api/requisicoes";
 import EditarAtividades from "./EditarAtividade";
 import EditarEtapa from "./etapas/EditarEtapa";
 import { IoMdEye } from "react-icons/io";
-import { MdBuild, MdCancel } from "react-icons/md";
+import { MdBuild, MdCancel, MdCheckCircle, MdDeliveryDining } from "react-icons/md";
 
 export default function GerenciarObra({ gerenciarObra }) {
   const { empreiteiro } = useUser();
@@ -31,29 +31,43 @@ export default function GerenciarObra({ gerenciarObra }) {
   const [idEtapaSelecionada, setIdEtapaSelecionada] = useState(null);
   const [etapaExpandida, setEtapaExpandida] = useState(null); // Novo estado para controlar a etapa expandida
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const token = localStorage.getItem("token");
+  const fetchData = async () => {
+    const token = localStorage.getItem("token");
+    if (empreiteiro){
       const response = await api.get(`/empreiteiro/obra/${gerenciarObra.id}/etapas`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.status === 200) {
         setEtapas(response.data);
       }
-    };
+    }
+    
+  };
+  useEffect(() => {
+    
     fetchData();
-  }, [empreiteiro.id, gerenciarObra.id]);
+  }, [empreiteiro, gerenciarObra]);
 
   const fetchDataAtividades = async (etapaId) => {
     const token = localStorage.getItem("token");
-    const response = await api.get(`/empreiteiro/obra/${gerenciarObra.id}/etapa/${etapaId}/atividades`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (response.status === 200) {
-      setAtividades(response.data);
-      setEtapaExpandida(etapaId); // Define a etapa expandida como a etapa clicada
+    if(empreiteiro){
+      const response = await api.get(`/empreiteiro/obra/${gerenciarObra.id}/etapa/${etapaId}/atividades`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.status === 200) {
+        setAtividades(response.data);
+        setEtapaExpandida(etapaId); // Define a etapa expandida como a etapa clicada
+      }
+    }else{
+      const response = await api.get(`/dono_obra/obra/${gerenciarObra.id}/etapa/${etapaId}/atividades`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.status === 200) {
+        setAtividades(response.data);
+        setEtapaExpandida(etapaId); // Define a etapa expandida como a etapa clicada
+      }
     }
+    
   };
 
   const handleExcluirEtapa = async (id) => {
@@ -65,6 +79,48 @@ export default function GerenciarObra({ gerenciarObra }) {
       setEtapas(etapas.filter((etapa) => etapa.id !== id));
     }
   };
+
+  const handleAprovarEtapa = async (row)=>{
+    console.log(row);
+    
+    const token = localStorage.getItem("token");
+    const response = await api.post(`/empreiteiro/obra/${gerenciarObra.id}/etapa/${row.id}/iniciar`, {}, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+    if (response.status === 200) {
+      fetchData();
+    }
+  }
+
+  const handleAprovarAtividade = async (row, atividade) =>{
+    const token = localStorage.getItem("token");
+    const response = await api.post(`/empreiteiro/obra/${gerenciarObra.id}/etapa/${row.id}/atividade/${atividade.id}/iniciar`, {}, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+    if (response.status === 200) {
+      fetchDataAtividades(row.id);
+    }
+  }
+
+  const handleEntregarAtividade = async (row, atividade)=>{
+    const token = localStorage.getItem("token");
+    const response = await api.post(`/empreiteiro/obra/${gerenciarObra.id}/etapa/${row.id}/atividade/${atividade.id}/finalizar`, {}, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+    if (response.status === 200) {
+      fetchDataAtividades(row.id);
+    }
+  }
+
+  const handleFinalizarEtapa = async (row) =>{
+    const token = localStorage.getItem("token");
+    const response = await api.post(`/empreiteiro/obra/${gerenciarObra.id}/etapa/${row.id}/finalizar`, {}, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+    if (response.status === 200) {
+      fetchData();
+    }
+  }
 
   return (
     <Box>
@@ -79,7 +135,7 @@ export default function GerenciarObra({ gerenciarObra }) {
               <TableCaption>Registro de etapas</TableCaption>
               <Thead>
                 <Tr>
-                  <Th>Nome</Th>
+                  <Th>Etapa</Th>
                   <Th>Status</Th>
                   <Th>Data de início</Th>
                   <Th>Previsão de término</Th>
@@ -106,19 +162,20 @@ export default function GerenciarObra({ gerenciarObra }) {
                             setMostrarEditarEtapas(true);
                           }}
                         />
-                        <IconButton
+                        {empreiteiro ? <IconButton
                           backgroundColor="#c51010"
                           color="white"
                           aria-label="Cancelar"
                           icon={<MdCancel />}
                           onClick={() => handleExcluirEtapa(row.id)}
                           mr={1}
-                        />
+                        />:null}
                         <IconButton
-                          backgroundColor="#28a745"
+                          backgroundColor="orange"
                           color="white"
                           aria-label="Ver Atividades"
                           icon={<IoMdEye />}
+                          mr={1}
                           onClick={() => {
                             if (etapaExpandida === row.id) {
                               setEtapaExpandida(null); // Fecha a etapa se já estiver expandida
@@ -127,6 +184,24 @@ export default function GerenciarObra({ gerenciarObra }) {
                             }
                           }}
                         />
+                        {row.status === "Aguardando" && empreiteiro ? (
+                          <IconButton
+                            backgroundColor="green"
+                            color="white"
+                            aria-label="Aprovar Etapa"
+                            icon={<MdCheckCircle  />}
+                            onClick={() => handleAprovarEtapa(row)}
+                          />
+                        ) : row.status !== "Concluído" && empreiteiro ? (
+                          <IconButton
+                            backgroundColor="red"
+                            color="white"
+                            aria-label="Finalizar Etapa"
+                            icon={<MdDeliveryDining />}
+                            onClick={() => handleFinalizarEtapa(row)}
+                          />
+                        ) : null}
+
                       </Td>
                     </Tr>
                     {etapaExpandida === row.id && (
@@ -140,6 +215,7 @@ export default function GerenciarObra({ gerenciarObra }) {
                                   <Th>Status</Th>
                                   <Th>Data de Início</Th>
                                   <Th>Data de Término</Th>
+                                  <Th>Opções</Th>
                                 </Tr>
                               </Thead>
                               <Tbody>
@@ -149,6 +225,26 @@ export default function GerenciarObra({ gerenciarObra }) {
                                     <Td>{atividade.status}</Td>
                                     <Td>{new Date(atividade.data_inicio).toLocaleDateString("pt-BR")}</Td>
                                     <Td>{new Date(atividade.data_termino).toLocaleDateString("pt-BR")}</Td>
+                                    <Td>
+                                      {atividade.status === "Aguardando" && empreiteiro ? (
+                                        <IconButton
+                                          backgroundColor="green"
+                                          color="white"
+                                          aria-label="Aprovar Atividade"
+                                          icon={<MdCheckCircle  />}
+                                          onClick={() => handleAprovarAtividade(row, atividade)}
+                                        />
+                                      ) : atividade.status !== "Concluído" && empreiteiro ? (
+                                        <IconButton
+                                          backgroundColor="red"
+                                          color="white"
+                                          aria-label="Entregar Atividade"
+                                          icon={<MdDeliveryDining />}
+                                          onClick={() => handleEntregarAtividade(row, atividade)}
+                                        />
+                                      ) : null}
+                                    </Td>
+
                                   </Tr>
                                 ))}
                               </Tbody>

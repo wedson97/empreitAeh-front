@@ -11,7 +11,13 @@ export default function Orcamento() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    setEmpreiteiro(localStorage.getItem("tipo_usuario"))
+    const tipo_usuario = localStorage.getItem("tipo_usuario")
+    if(tipo_usuario==="empreiteiro"){
+      setEmpreiteiro(tipo_usuario)
+    }else{
+      setDonoObra(tipo_usuario)
+    }
+    
 	  const id = localStorage.getItem("id")
     if (empreiteiro === null && id === null) {
       navigate("/");

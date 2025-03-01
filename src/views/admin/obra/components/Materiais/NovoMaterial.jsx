@@ -58,7 +58,7 @@ const NovoMaterial = ({ mostrarBotao, idEtapaSelecionada, setIdEtapaSelecionada,
   // Executa a função de busca sempre que o ID da etapa selecionada mudar
   useEffect(() => {
     fetchMateriaisDaEtapa(idEtapaSelecionada);
-  }, [idEtapaSelecionada]);
+  }, [idEtapaSelecionada,ultimoMaterialCadastrado]);
 
   useEffect(() => {
     const fetchData = async () => {

@@ -42,8 +42,6 @@ export default function TabelaFuncionario({handleMostrar, mostrarTabela, setMost
                 Authorization: `Bearer ${token}`
             }
         });
-      console.log(response.data);
-        
       setFuncionarios(response.data);
     }
     fetchData();

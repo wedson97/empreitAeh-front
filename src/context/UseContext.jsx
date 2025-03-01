@@ -34,54 +34,10 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     const performLogin = async () => {
       const id = localStorage.getItem('id');
-      const email = localStorage.getItem('email');
-      const usuario = localStorage.getItem('usuario');
-      const tipo_usuario = localStorage.getItem('userType');
-      
-      if (email && usuario) {
-        try {
-          if (tipo_usuario === "empreiteiro") {
-            const response = await api.get("/empreiteiro/"+id);
-            if (response.status === 200) {
-              setEmpreiteiro(response.data);
-              localStorage.setItem("userType", "empreiteiro");
-             
-            } else {
-              toast({
-                title: "Falha no login",
-                description: "Verifique suas credenciais!",
-                status: "error",
-                duration: 3000,
-                isClosable: true,
-              });
-            }
-          } else if (tipo_usuario === "dono_obra") {
-            const response = await api.get("/dono_obra/"+id);
-            if (response.status === 200) {
-              setDonoObra(response.data);
-              localStorage.setItem("userType", "dono_obra");
-             
-            } else {
-              toast({
-                title: "Falha no login",
-                description: "Verifique suas credenciais!",
-                status: "error",
-                duration: 3000,
-                isClosable: true,
-              });
-            }
-          }
-          
-          
-        } catch (error) {
-          toast({
-            title: "Falha no login",
-            description: "Verifique suas credenciais!",
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-          });
-        }
+      const tipo_usuario = localStorage.getItem('tipo_usuario');
+      if (tipo_usuario==="dono_obra"){
+        
+        setDonoObra(tipo_usuario)
       }
     };
 
