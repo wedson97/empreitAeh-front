@@ -315,7 +315,6 @@ export default function NovoObra({ handleVoltarTabela }) {
   display="flex"
   justifyContent="flex-end"
   mt={4}
-  columns={2}
   flexDirection={{ xs: 'column', sm: 'row' }} // Coluna em telas pequenas, linha em telas maiores
   gap={1} // Espaçamento entre os botões
 >

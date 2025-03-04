@@ -1,19 +1,16 @@
-
 import { Box, Button, Grid } from "@chakra-ui/react";
 import Banner from "views/admin/profile/components/Banner";
 import banner from "assets/img/auth/banner.png";
-import avatar from "assets/img/avatars/avatar4.png";
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import EditarPerfil from "./components/EditarPerfil";
-import { useUser } from "context/UseContext";
-import CadastroEndereco from "../default/components/CadastrarEndereco";
 
 export default function Overview() {
   const [editarPerfil, setEditarPerfil] = useState(false);
-  const tipo_usuario = localStorage.getItem("tipo_usuario")
-	const id = localStorage.getItem("id")
-  const name = localStorage.getItem("nome")
+  const tipo_usuario = localStorage.getItem("tipo_usuario");
+  const id = localStorage.getItem("id");
+  const name = localStorage.getItem("nome");
+  const avatar = localStorage.getItem("foto");
+
   const getTipoUsuario = () => {
     if (tipo_usuario === "dono_obra") {
       return "Dono de obra";
@@ -37,8 +34,7 @@ export default function Overview() {
         {editarPerfil ? "Voltar" : "Editar Perfil"}
       </Button>
       {editarPerfil ? (
-        <EditarPerfil handleToggleEditarPerfil={handleToggleEditarPerfil}/>
-        // <CadastroEndereco/>
+        <EditarPerfil handleToggleEditarPerfil={handleToggleEditarPerfil} />
       ) : (
         <Grid
           templateColumns={{

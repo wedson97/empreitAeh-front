@@ -35,7 +35,7 @@ function SignUpDonoObra() {
   });
 
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState(1); // Step para controle de navegação
+  const [step, setStep] = useState(1);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

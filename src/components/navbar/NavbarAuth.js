@@ -23,7 +23,6 @@ import {
 
 // Custom components
 import IconBox from "components/icons/IconBox";
-import { HorizonLogo } from "components/icons/Icons";
 import { SidebarResponsive } from "components/sidebar/Sidebar";
 import { SidebarContext } from "contexts/SidebarContext";
 
@@ -101,7 +100,6 @@ export default function AuthNavbar(props) {
       alignItems='center'
       color={mainText}>
       <Stack direction='row' spacing='12px' align='center' justify='center'>
-        <HorizonLogo h='26px' w='175px' color={logoColor} />
       </Stack>
       <Text fontsize='sm' mt='3px'>
         {logoText}
@@ -120,7 +118,6 @@ export default function AuthNavbar(props) {
         justifyContent='center'
         alignItems='center'
         color={mainText}>
-        <HorizonLogo h='26px' w='175px' my='32px' color={logoColor} />
       </Link>
     );
     // mainText = useColorModeValue("gray.700", "gray.200");
@@ -324,32 +321,7 @@ export default function AuthNavbar(props) {
               <SimpleGrid columns='3' gap='10px' minW='500px' me='20px'>
                 {createAuthLinks(authObject)}
               </SimpleGrid>
-              {/* <Flex
-                bg='red'
-                direction='column'
-                justify='center'
-                align='center'
-                w='stretch'
-                minH='230px'
-                borderRadius='15px'>
-                <IconBox
-                  bg='white'
-                  color='white'
-                  borderRadius='50%'
-                  h='50px'
-                  w='50px'
-                  mb='12px'>
-                  <Icon as={AiFillStar} w='25px' h='25px' color='blue.500' />
-                </IconBox>
-                <Text
-                  fontSize='xl'
-                  fontWeight='bold'
-                  color='#fff'
-                  maxW='80%'
-                  textAlign='center'>
-                  Explore our utilities pages
-                </Text>
-              </Flex> */}
+             
             </Flex>
           </MenuList>
         </Menu>
@@ -479,21 +451,7 @@ export default function AuthNavbar(props) {
             />
           </Box>
           {linksAuth}
-          <Link href='https://www.horizon-ui.com/pro'>
-            <Button
-              bg={bgButton}
-              color={colorButton}
-              fontSize='xs'
-              variant='no-effects'
-              borderRadius='50px'
-              px='45px'
-              display={{
-                sm: "none",
-                lg: "flex",
-              }}>
-              Buy Now
-            </Button>
-          </Link>
+         
         </Flex>
       </Flex>
     </SidebarContext.Provider>

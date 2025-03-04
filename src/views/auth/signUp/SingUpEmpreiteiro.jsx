@@ -41,7 +41,7 @@ function SignUpEmpreiteiro() {
 
 
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState(1); // Step para controle de navegação
+  const [step, setStep] = useState(1);
   
   const handleClick = () => setShow(!show);
   const [formData, setFormData] = useState({

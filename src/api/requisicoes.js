@@ -1,9 +1,6 @@
 import axios from 'axios';
 
 const BASE_URL = 'http://localhost:5000';
-// const BASE_URL = 'http://localhost:5000';
-// const BASE_URL = 'https://enormous-elephant-eminent.ngrok-free.app';
-
 const api = axios.create({
   baseURL: BASE_URL + '/',
   timeout: 10000,

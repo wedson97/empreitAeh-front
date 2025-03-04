@@ -141,7 +141,7 @@ export default function Dashboard(props) {
               <Box>
                 <Navbar
                   onOpen={onOpen}
-                  logoText={'Horizon UI Dashboard PRO'}
+                  logoText={'Empreitaeh logo'}
                   brandText={routes}
                   secondary={getActiveNavbar(routes)}
                   message={getActiveNavbarText(routes)}

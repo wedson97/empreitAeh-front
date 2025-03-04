@@ -72,60 +72,6 @@ function SignIn() {
   };
   const toast = useToast();
  
-  // const handleSubmit = async (user) => {
-  //   const data = new FormData();
-  //   data.append('email', formData.email);
-  //   data.append('senha', formData.senha);
-    
-  //   try {
-
-  //     const response = await api.post("/login",{email:user.email, senha:""})
-  //     if(response.status===200){
-        
-  //       if (response.data.tipo_usuario.id === 3) {
-  //         setEmpreiteiro(response.data);
-  //         localStorage.setItem("userType", "empreiteiro");
-  //       } else if (response.data.tipo_usuario.id === 2) {
-  //         setDonoObra(response.data);
-  //         localStorage.setItem("userType", "dono_obra");
-  //       }
-        
-  //       setFormData({email: '',senha: ''})
-  //       navigate("/admin/default")
-  //       localStorage.setItem("id",response.data.id)
-  //       localStorage.setItem("email",response.data.email)
-  //       localStorage.setItem("usuario", response.data.nome)
-  //       if(response.data.tipo_usuario.id === 2 && response.data.endereco.cidade===null && response.data.endereco.bairro===null && response.data.endereco.rua===null){
-  //         // navigate("/admin/perfil")
-  //         // setEditarPerfil(true)
-  //         // toast({
-  //         //   title: "Completar cadastro",
-  //         //   description: `Para utilizar todas as funcionalidades do sistema, cadastre seu endereço atual!`,
-  //         //   status: "success",
-  //         //   duration: 6000,
-  //         //   isClosable: true,
-  //         //   });
-  //       }
-        
-  //     }else{
-  //       toast({
-  //         title: "Falha no login",
-  //         description: `Verifique suas credenciais!`,
-  //         status: "error",
-  //         duration: 3000,
-  //         isClosable: true,
-  //         });
-  //     }
-  //   } catch (AxiosError) {
-  //     toast({
-  //       title: "Falha no login",
-  //       description: `Verifique suas credenciais!`,
-  //       status: "error",
-  //       duration: 3000,
-  //       isClosable: true,
-  //       });
-  //   }
-  // }
    const handleSubmit = async (user) => {
     
     try {
@@ -167,12 +113,15 @@ function SignIn() {
   }
 const handleGoogleSignIn = async () => {
     const auth = getAuth();
-    // console.log(auth);
     
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
+      console.log(result);
+
+      
       const user = result.user;
+      localStorage.setItem("foto", user.photoURL)
       localStorage.setItem("nome",user.displayName)
       handleSubmit(user.accessToken)
     } catch (error) {

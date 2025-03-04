@@ -98,7 +98,6 @@ export default function Obra() {
       mx="auto"
       px={{ base: 4, md: 8 }}
     >
-      {/* Botões superiores */}
       {!criarObra && mostrarTabela && (
         <Button
           mb={4}
@@ -147,7 +146,6 @@ export default function Obra() {
         </Box>
       )}
 
-      {/* Container principal dos componentes */}
       <Box width="100%">
         {criarObra ? (
           <>

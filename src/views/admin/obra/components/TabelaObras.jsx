@@ -29,16 +29,13 @@ export default function TabelaObras({ handleGerenciar}) {
   const navigate = useNavigate();
   const [isPdfVisible, setPdfVisible] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
-  const {idEtapaSelecionada, setIdEtapaSelecionada,setObraCadastrada, obraCadastrada, ultimoMaterialCadastrado, setUltimoMaterialCadastrado, ultimaEtapaCadastrada, setUltimaEtapaCadastrada} = useUser();
-  const [atividadesPorObra, setAtividadesPorObra] = useState({});
-
-  const toast = useToast();
+  const {setObraCadastrada, setUltimaEtapaCadastrada} = useUser();
 
   function getCurrentDate() {
     const today = new Date();
     const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // Mês começa do zero, então somamos 1
-    const day = String(today.getDate()).padStart(2, '0'); // Garantir que o dia tenha dois dígitos
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   }
   
@@ -49,7 +46,7 @@ export default function TabelaObras({ handleGerenciar}) {
       await api.post(`/empreiteiro/obra/${obraId}/iniciar`, {data_inicio}, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      // Atualizar lista de obras após aprovação
+
       const obrasAtualizadas = obras.map(obra => 
         obra.id === obraId ? { ...obra, data_inicio: new Date().toISOString().split('T')[0] } : obra
       );
@@ -66,7 +63,7 @@ export default function TabelaObras({ handleGerenciar}) {
       await api.post(`/empreiteiro/obra/${obraId}/entregar`, {data_entrega}, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      // Atualizar lista de obras após entrega
+
       fetchEmpreiteiro();
     } catch (error) {
       console.error("Erro ao entregar obra:", error);
@@ -117,10 +114,6 @@ export default function TabelaObras({ handleGerenciar}) {
     setObraCadastrada(row.id)
   }
 
-  const handleViewPdf = (row) => {
-    setSelectedRow(row);
-    setPdfVisible(true);
-  };
 
   return (
     <SimpleGrid gap='20px' mb='20px' backgroundColor="white" borderRadius="20px" overflow="hidden">
@@ -132,7 +125,9 @@ export default function TabelaObras({ handleGerenciar}) {
               <Th>Dono da obra</Th>
               <Th>Data de início</Th>
               <Th>Previsão de término</Th>
-              <Th>Opções</Th>
+              
+              {empreiteiro ?<Th>Opções</Th>:null}
+              
             </Tr>
           </Thead>
           <Tbody>
@@ -148,13 +143,7 @@ export default function TabelaObras({ handleGerenciar}) {
 
                   <Td>
                     <Flex gap="2">
-                      <IconButton
-                        backgroundColor="#e8661e"
-                        color="white"
-                        aria-label="Visualizar"
-                        icon={<IoMdEye />}
-                        onClick={() => handleViewPdf(row)}
-                      />
+                      
                       {empreiteiro ?<IconButton
                         backgroundColor="#2b6cb0"
                         color="white"
@@ -163,7 +152,6 @@ export default function TabelaObras({ handleGerenciar}) {
                         onClick={() => handleClickGerencia(row)}
                       />:null}
                       
-                      {/* Botão condicional */}
                       {!temDataInicio && empreiteiro && (
                         <IconButton
                           backgroundColor="green.500"

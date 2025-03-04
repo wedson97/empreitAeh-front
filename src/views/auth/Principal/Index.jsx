@@ -1,6 +1,5 @@
 
 import React, {useEffect} from "react";
-// Chakra imports
 import {
   Box,
   Button,
@@ -44,7 +43,6 @@ function Principal() {
     </Box>
 
     <Flex alignItems={'center'} justifyContent="space-between" width="100%">
-      {/* Links à esquerda com margem à esquerda */}
       <Flex ml={8}>
         <Stack direction={'row'} spacing={4} display={{ base: 'none', md: 'flex' }} color={"white"}>
           <Link
