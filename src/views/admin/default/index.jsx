@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import CadastroEndereco from "./components/CadastrarEndereco";
 import { getAuth } from "firebase/auth";
 import api from "api/requisicoes";
+import DashboardObras from "./components/DashboardObras";
 
 export default function UserReports() {
   const { donoObra } = useUser();
@@ -57,14 +58,15 @@ export default function UserReports() {
           </>
         ) : (
           <>
-          {/* <SimpleGrid>
-              <ComplexTable columnsData={columnsDataComplex} tableData={tableDataComplex} />
+          <SimpleGrid>
+              {/* <ComplexTable columnsData={columnsDataComplex} tableData={tableDataComplex} /> */}
+              <DashboardObras/>
               <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap="20px"></SimpleGrid>
             </SimpleGrid>
             <SimpleGrid columns={{ base: 1, md: 1, xl: 2 }} gap="20px" mb="20px">
-              <MiniCalendar pt="50px" pl="60px" h="100%" minW="100%" selectRange={true} />
-              <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap="20px"></SimpleGrid>
-            </SimpleGrid> */}</>
+              {/* <MiniCalendar pt="50px" pl="60px" h="100%" minW="100%" selectRange={true} />
+              <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap="20px"></SimpleGrid> */}
+            </SimpleGrid></>
           
         )}
       </Box>

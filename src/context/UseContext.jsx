@@ -30,6 +30,8 @@ export const UserProvider = ({ children }) => {
   
   const [ultimoMaterialCadastrado, setUltimoMaterialCadastrado] = useState("")
 
+  const [obraSelecionada, setObraSelecionada] = useState(null);
+
   const toast = useToast();
   useEffect(() => {
     const performLogin = async () => {
@@ -38,13 +40,15 @@ export const UserProvider = ({ children }) => {
       if (tipo_usuario==="dono_obra"){
         
         setDonoObra(tipo_usuario)
+      }else{
+        setEmpreiteiro(tipo_usuario)
       }
     };
 
     performLogin();
   }, []);
   return (
-    <UserContext.Provider value={{ultimoMaterialCadastrado, setUltimoMaterialCadastrado, ultimaEtapaCadastrada, setUltimaEtapaCadastrada, obraCadastrada, setObraCadastrada, idEtapaSelecionada, setIdEtapaSelecionada, pagamentos, setPagamentos, accessToken, setAccessToken,orcamentos, setOrcamentos, obras, setObras,empreiteiro, setEmpreiteiro, donoObra, setDonoObra, funcionarios, setFuncionarios, fornecedores, setFornecedores }}>
+    <UserContext.Provider value={{obraSelecionada, setObraSelecionada, ultimoMaterialCadastrado, setUltimoMaterialCadastrado, ultimaEtapaCadastrada, setUltimaEtapaCadastrada, obraCadastrada, setObraCadastrada, idEtapaSelecionada, setIdEtapaSelecionada, pagamentos, setPagamentos, accessToken, setAccessToken,orcamentos, setOrcamentos, obras, setObras,empreiteiro, setEmpreiteiro, donoObra, setDonoObra, funcionarios, setFuncionarios, fornecedores, setFornecedores }}>
       {children}
     </UserContext.Provider>
   );

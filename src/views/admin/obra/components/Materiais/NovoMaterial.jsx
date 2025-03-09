@@ -4,12 +4,14 @@ import { useUser } from "context/UseContext";
 import { useEffect, useState } from "react";
 
 const NovoMaterial = ({ mostrarBotao, idEtapaSelecionada, setIdEtapaSelecionada, ultimoMaterialCadastrado, passos, formDataMaterial, setFormDataMaterial, obraCadastrada }) => {
+  
   const [etapas, setEtapas] = useState([]);
   const { fornecedores, setFornecedores } = useUser();
   const [materiais, setMateriais] = useState([]);
-  const { setUltimoMaterialCadastrado } = useUser();
+  const { setUltimoMaterialCadastrado,setObraSelecionada, obraSelecionada } = useUser();
   const toast = useToast();
-
+  console.log(obraSelecionada);
+  
   // Valores iniciais do formulário
   const initialFormData = {
     id_fornecedor: "",
@@ -63,11 +65,22 @@ const NovoMaterial = ({ mostrarBotao, idEtapaSelecionada, setIdEtapaSelecionada,
   useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem("token");
-      const response = await api.get(`/empreiteiro/obra/${obraCadastrada}/etapas`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+      console.log(obraCadastrada);
+      let response;
+      if(obraCadastrada){
+        response = await api.get(`/empreiteiro/obra/${obraCadastrada}/etapas`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+      }else{
+        response = await api.get(`/empreiteiro/obra/${obraSelecionada.id}/etapas`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+      }
+      
 
       if (response.status === 200) {
         setEtapas(response.data);
