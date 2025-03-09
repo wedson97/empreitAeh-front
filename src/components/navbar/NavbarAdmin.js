@@ -109,7 +109,7 @@ export default function AdminNavbar(props) {
 
 						<BreadcrumbItem color={secondaryText} fontSize='sm' mb='5px'>
 							<BreadcrumbLink href='#' color={secondaryText}>
-							{brandText.name === "/admin/default" ? 'Dashboard' :getLastSegment()}
+							{brandText.name === "/admin/dashboard" ? 'Dashboard' :getLastSegment()}
 							</BreadcrumbLink>
 						</BreadcrumbItem>
 					</Breadcrumb>
@@ -130,7 +130,7 @@ export default function AdminNavbar(props) {
 						_focus={{
 							boxShadow: 'none'
 						}}>
-						{brandText === "/admin/default" ? 'Dashboard' :getLastSegment()}
+						{brandText === "/admin/dashboard" ? 'Dashboard' :getLastSegment()}
 					</Link>
 				</Box>
 				<Box ms='auto' w={{ sm: '100%', md: 'unset' }}>

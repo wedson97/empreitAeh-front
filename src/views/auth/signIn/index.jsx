@@ -49,7 +49,7 @@ function SignIn() {
     const tipo_usuario = localStorage.getItem("tipo_usuario")
 	  const id = localStorage.getItem("id")
     if (tipo_usuario !== null && id !== null) {
-      navigate("/admin/default");
+      navigate("/admin/dashboard");
     }
 
     window.scrollTo(0, 0);
@@ -91,7 +91,7 @@ function SignIn() {
         
         localStorage.setItem("tipo_usuario",resultado.payload.user.tipo_usuario)
         localStorage.setItem("id",resultado.payload.user.id)
-        navigate("/admin/default")
+        navigate("/admin/dashboard")
       }else{
         toast({
           title: "Falha no login",

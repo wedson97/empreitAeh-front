@@ -28,7 +28,7 @@ function Principal() {
     
     
     if (nome !== null && tipo_usuario !== null && id !== null) {
-      navigate("/admin/default");
+      navigate("/admin/dashboard");
     }
 
     window.scrollTo(0, 0);

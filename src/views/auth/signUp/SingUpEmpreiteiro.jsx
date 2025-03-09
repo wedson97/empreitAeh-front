@@ -62,7 +62,7 @@ function SignUpEmpreiteiro() {
     const tipo_usuario = localStorage.getItem("tipo_usuario")
 	  const id = localStorage.getItem("id")
     if (tipo_usuario !== null && id !== null) {
-      navigate("/admin/default");
+      navigate("/admin/dashboard");
     }
 
     window.scrollTo(0, 0);

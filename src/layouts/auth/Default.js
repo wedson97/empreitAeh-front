@@ -32,7 +32,7 @@ function AuthIllustration(props) {
         justifyContent='start'
         direction='column'>
         <NavLink
-          to={isSignUp ? '/auth/sign-in' : '/admin/default'}
+          to={isSignUp ? '/auth/sign-in' : '/admin/dashboard'}
           style={() => ({
             width: "fit-content",
             marginTop: "40px",
