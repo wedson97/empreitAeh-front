@@ -160,7 +160,7 @@ const handleGoogleSignIn = async () => {
             color={textColorSecondary}
             fontWeight='400'
             fontSize='md'>
-            Coloque seu email e sua senha!
+            Entre com sua conta google
           </Text>
         </Box>
         
@@ -191,17 +191,17 @@ const handleGoogleSignIn = async () => {
             <Icon as={FcGoogle} w='20px' h='20px' me='10px' />
             Entrar com o Google
           </Button>
-          <Flex align='center' mb='25px'>
+          {/* <Flex align='center' mb='25px'>
             <HSeparator />
             <Text color='gray.400' mx='14px'>
               or
             </Text>
             <HSeparator />
-          </Flex>
+          </Flex> */}
           <FormControl>
           <form onSubmit={handleSubmit}>
           
-          <FormControl>
+          {/* <FormControl>
           <FormLabel
               display='flex'
               ms='4px'
@@ -299,9 +299,9 @@ const handleGoogleSignIn = async () => {
               type="submit"
               >
               Entrar
-            </Button>
+            </Button>*/}
             </form>
-          </FormControl>
+          </FormControl> 
           
           <Flex
             flexDirection='column'

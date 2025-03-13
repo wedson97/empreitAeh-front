@@ -1,17 +1,16 @@
-import { Box, SimpleGrid, FormControl, FormLabel, Input, Select, TableContainer, Table, TableCaption, Thead, Tr, Th, Tbody, Td, Button, useToast } from "@chakra-ui/react";
+import { Box, SimpleGrid, FormControl, FormLabel, Input, Select, TableContainer, Table, TableCaption, Thead, Tr, Th, Tbody, Td, Button, useToast, IconButton } from "@chakra-ui/react";
 import api from "api/requisicoes";
 import { useUser } from "context/UseContext";
 import { useEffect, useState } from "react";
+import { IoMdCloseCircle } from "react-icons/io";
 
-const NovoMaterial = ({ mostrarBotao, idEtapaSelecionada, setIdEtapaSelecionada, ultimoMaterialCadastrado, passos, formDataMaterial, setFormDataMaterial, obraCadastrada }) => {
+const NovoMaterial = ({ gerenciarObra,mostrarBotao, idEtapaSelecionada, setIdEtapaSelecionada, ultimoMaterialCadastrado, passos, formDataMaterial, setFormDataMaterial, obraCadastrada }) => {
   
   const [etapas, setEtapas] = useState([]);
   const { fornecedores, setFornecedores } = useUser();
   const [materiais, setMateriais] = useState([]);
   const { setUltimoMaterialCadastrado,setObraSelecionada, obraSelecionada } = useUser();
   const toast = useToast();
-  console.log(obraSelecionada);
-  
   // Valores iniciais do formulário
   const initialFormData = {
     id_fornecedor: "",
@@ -143,6 +142,26 @@ const NovoMaterial = ({ mostrarBotao, idEtapaSelecionada, setIdEtapaSelecionada,
     }
   };
 
+  const handleExcluirMaterial=async(row)=>{
+    const token = localStorage.getItem("token");
+    const response = await api.delete("/empreiteiro/obra/"+gerenciarObra.id+"/etapa/"+idEtapaSelecionada+"/material/"+row.id, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (response.status === 200) {
+      toast({
+        title: "Material deletado.",
+        description: "O material foi deletado com sucesso.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+      fetchMateriaisDaEtapa(idEtapaSelecionada);
+      
+    }
+  }
+
   return (
     <>
       <Box p={4} maxW="1200px" mx="auto" backgroundColor="white" borderRadius="md" shadow="md">
@@ -214,6 +233,15 @@ const NovoMaterial = ({ mostrarBotao, idEtapaSelecionada, setIdEtapaSelecionada,
                 <Td>{row.nome}</Td>
                 <Td>{row.valor_unitario}</Td>
                 <Td>{row.quantidade}</Td>
+                <Td>
+                      <IconButton
+                        backgroundColor="#c51010"
+                        color="white"
+                        aria-label="Aprovar Atividade"
+                        icon={<IoMdCloseCircle  />}
+                        onClick={()=>{handleExcluirMaterial(row)}}
+                      />
+                  </Td>
               </Tr>
             ))}
           </Tbody>

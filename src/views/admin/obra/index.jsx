@@ -188,6 +188,7 @@ export default function Obra() {
               Voltar
             </Button>
             <NovoMaterial
+              gerenciarObra={gerenciarObra}
               mostrarBotao={true}
               passos={null}
               formDataMaterial={formDataMaterial}

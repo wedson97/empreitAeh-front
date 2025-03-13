@@ -133,7 +133,6 @@ function SignUpDonoObra() {
               <FormControl>
                 <Button
                   fontSize='sm'
-                  variant='brand'
                   fontWeight='500'
                   backgroundColor={'white'}
                   w='100%'
