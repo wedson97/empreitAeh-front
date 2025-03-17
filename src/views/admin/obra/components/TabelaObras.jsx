@@ -122,6 +122,7 @@ export default function TabelaObras({ handleGerenciar}) {
           <TableCaption>Registro de obras</TableCaption>
           <Thead>
             <Tr>
+              <Th>Id</Th>
               <Th>Dono da obra</Th>
               <Th>Data de início</Th>
               <Th>Previsão de término</Th>
@@ -137,6 +138,7 @@ export default function TabelaObras({ handleGerenciar}) {
               
               return (
                 <Tr key={index}>
+                  <Td>{row.id}</Td>
                   <Td>{row.dono_obra.nome}</Td>
                   <Td>{row.data_inicio || 'Não iniciada'}</Td>
                   <Td>{row.data_inicio && !row.data_entrega ? 'Em andamento':row.data_entrega }</Td>

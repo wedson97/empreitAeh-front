@@ -362,6 +362,7 @@ export default function TabelaOrcamento({obra}) {
           <TableCaption>Registro de orçamentos</TableCaption>
           <Thead>
             <Tr>
+              <Th>Id Obra</Th>
               <Th>Descrição</Th>
               <Th>Data criação</Th>
               <Th>Opções</Th>
@@ -370,6 +371,8 @@ export default function TabelaOrcamento({obra}) {
           <Tbody>
             {orcamentos.map((row, index) => (
               <Tr key={index}>
+                <Td>{row.obra[0].id}</Td>
+                <Td>{row.descricao}</Td>
                 <Td>{row.descricao}</Td>
                 <Td>{formatDate(row.data_criacao)}</Td>
               
