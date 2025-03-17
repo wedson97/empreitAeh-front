@@ -38,7 +38,7 @@ pipeline {
         '''
 
         sh 'docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .'
-        sh 'docker run -d --name ${DOCKER_IMAGE} ${DOCKER_IMAGE}:${DOCKER_TAG}'
+        sh 'docker run -d --name ${DOCKER_IMAGE} ${DOCKER_IMAGE}:${DOCKER_TAG} -p 3002:3000'
       }
     }
   }
