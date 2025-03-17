@@ -1,10 +1,5 @@
 pipeline {
-  agent {
-    docker {            
-        image 'node:20.2.0-alpine3.17'
-        args '-v /var/run/docker.sock:/var/run/docker.sock'
-    }
-  }
+  agent any // Executa no próprio host do Jenkins
 
   environment {
     DOCKER_IMAGE = "empreitaehfront"
@@ -13,6 +8,11 @@ pipeline {
 
   stages {
     stage('Build') {
+      agent {
+        docker {            
+          image 'node:20.2.0-alpine3.17' // Usa Node apenas para build
+        }
+      }
       steps {
         echo "Build da aplicação"
         sh 'npm install' 
@@ -29,13 +29,8 @@ pipeline {
     stage('Deploy') {
       steps {
         echo "Deploy da aplicação"
-        
-        sh 'docker stop ${DOCKER_IMAGE} || true'
-        sh 'docker rm ${DOCKER_IMAGE} || true'
 
-        
         sh 'docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .'
-
         sh 'docker run -d --name ${DOCKER_IMAGE} ${DOCKER_IMAGE}:${DOCKER_TAG}'
       }
     }
