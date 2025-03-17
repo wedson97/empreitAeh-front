@@ -2,7 +2,7 @@ pipeline {
   agent any // Executa no próprio host do Jenkins
 
   environment {
-    DOCKER_IMAGE = "empreitaehfront"
+    DOCKER_IMAGE = "empreitaehfront-app"
     DOCKER_TAG = "latest"
   }
 
@@ -29,6 +29,13 @@ pipeline {
     stage('Deploy') {
       steps {
         echo "Deploy da aplicação"
+
+        sh '''
+          if [ "$(docker ps -q -f name=${DOCKER_IMAGE})" ]; then
+            docker stop ${DOCKER_IMAGE}
+            docker rm ${DOCKER_IMAGE}
+          fi
+        '''
 
         sh 'docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .'
         sh 'docker run -d --name ${DOCKER_IMAGE} ${DOCKER_IMAGE}:${DOCKER_TAG}'
